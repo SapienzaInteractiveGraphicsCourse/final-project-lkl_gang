@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<title>Three.js Crash Course </title>
+		
+		<link rel="stylesheet" href="css/style.css">
+		
+		<style> 
+			body {margin: 0; }
+			canvas {width: 100%; height: 100%;};
+		</style>
+	</head>
+	<body>
+		
+		<div id="overlay">
+			<form>
+				<label id="bulletsNum">10</label>
+				<label id="recharge">Press 'R' to recharge</label>
+			</form>
+			<img id="title" src="img/title.png"></img>
+			<img id="Menu" src="img/difficulty.png"></img>
+			<img id="level" src="img/level.png"></img>
+			<img id="level_num" src="img/lev_1.png"></img>
+			<img id="lifebar" src="img/lifebar/lifeBar_0.png"></img>
+			<img id="bullets" src="img/bullets.png"></img>
+		</div>
+		<script>
+			document.getElementById("title").style.visibility = "visible";
+			document.getElementById("Menu").style.visibility = "visible";
+			document.getElementById("level").style.visibility = "hidden";
+			document.getElementById("level_num").style.visibility = "hidden";
+			document.getElementById("lifebar").style.visibility = "hidden";
+			document.getElementById("bullets").style.visibility = "hidden";
+			document.getElementById("bulletsNum").style.visibility = "hidden";
+			document.getElementById("recharge").style.visibility = "hidden";
+		</script>
+		<script src= "js/three.js"> </script>
+		<script src= "js/OrbitControls.js"> </script>
+		<script src= "js/ObjectLoader.js"> </script>
+		<script src= "js/Tween.js"> </script>
+		<script src= "scripts/init.js"> </script>
+		<script>
+			var audio = new Audio("halo_theme_song.mp3");
+			var musicOn = false;
+			
+			audio.loop = true;
+			audio.onended = function(){
+				audio.play();
+			}
+			
+			function audioChange() {
+				if(musicOn == true){
+					audio.pause();
+					musicOn = false;
+					document.getElementById("speaker").style.visibility = "hidden";
+					document.getElementById("speakerMute").style.visibility = "visible";
+				}
+				else{
+					audio.play();
+					musicOn = true;
+					document.getElementById("speaker").style.visibility = "visible";
+					document.getElementById("speakerMute").style.visibility = "hidden";
+				}
+			}
+			
+		</script>
+		<img id="speaker" src="img/speaker.png" onclick="audioChange()"></audio>
+		<img id="speakerMute" src="img/speakerMute.png" onclick="audioChange()"></audio>
+		<script>
+			document.getElementById("speaker").style.visibility = "hidden";
+			document.getElementById("speakerMute").style.visibility = "visible";
+		</script>
+	</body>
+</html>
