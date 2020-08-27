@@ -4,6 +4,7 @@ import Soldier from "/scripts/Soldier.js";
 import Robot from "/scripts/robot.js";
 import Stats from "/js/stats.module.js";
 
+//VARIABLES
 var scene;
 var camera, initCamera;
 var renderer, initRenderer;
@@ -15,21 +16,40 @@ var mouse;
 var intersects1, intersects2, intersects3;
 var intersectsStart;
 
-var modelSoldier, modelRobot;
-var soldiers = [];
-var robot;
-var numSoldiers = 2;
-var arrayOfSoldierMeshesToDetect = [];
+var plane, plane1, plane2, plane3, planeStart;
+var plane1sel, plane2sel, plane3sel;
+
+var chScene = false;
+var bars = false;
+
+//Game logic
+var lev = -1;
+var scenelv = 0;
+
+var inLevel = false;
 var i, j = 0;
 var clock = new THREE.Clock();
-var inLevel = false;
+var ground;
+var stats;
 
+//Enemy variables
+var modelSoldier, modelRobot;
+var soldiers = [];
+var numSoldiers = 2;
+var arrayOfSoldierMeshesToDetect = [];
+
+//Robot variables
+var robot;
 var moveForward = false;
 var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var attack = false;
 
+//LIGHTS
+var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
+
+//FUNCTIONS
 var onKeyDown = function ( event ) {
 	switch ( event.keyCode ) {
 		// case 38: // up
@@ -78,17 +98,7 @@ var onKeyUp = function ( event ) {
 	}
 };
 
-var ground;
-var stats;
-
-var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
-
 function init(){
-	
-	mainPage();
-}
-
-function mainPage(){ 
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 			
@@ -111,8 +121,7 @@ function mainPage(){
 
 //Get mouse position
 function onDocumentMouseMove( event ) {
-
-    event.preventDefault();
+	event.preventDefault();
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
@@ -135,12 +144,8 @@ function keyListener(event){
 	}
 }
   
-
-var chScene = false;
-var bars = false;
 function mouseClick( event ) {
-
-    event.preventDefault();
+	event.preventDefault();
 	if(bars == false){
 		if (intersects1.length > 0){ 
 			//console.log("easy");
@@ -204,45 +209,6 @@ function createGround(){
     scene.add(ground);
 }
 
-async function loadModels(){
-	//adding the soldiers to the scene
-	for(i=0; i < numSoldiers; i++){
-		var tmp = await promiseModel("models/Soldier.glb");
-		modelSoldier = tmp.scene;
-		soldiers[i] = new Soldier(modelSoldier, scene);
-		scene.add(soldiers[i].model);
-		var vertex = ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)];
-		soldiers[i].setPosition(vertex);
-	}
-
-	//creating the arrayOfSoldierMeshesToDetect taking the box meshes from each soldier
-	for(i = 0; i < scene.children.length; i++){
-		if(scene.children[i].name == "soldier"){
-			arrayOfSoldierMeshesToDetect[j] = scene.children[i].children[0].children[3];
-			j++;
-		}
-	}
-
-	//passing the arrayOfSoldierMeshesToDetect to each soldier
-	for(i=0; i < numSoldiers; i++){
-		soldiers[i].arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
-	}
-
-	inLevel = true;
-
-	//Robot model
-	var tmp = await promiseModel("models/RobotExpressive.glb");
-	modelRobot = tmp.scene;
-	robot = new Robot(modelRobot);
-	modelRobot.name = "player";
-	scene.add(modelRobot);
-	robot.arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
-
-	for(i=0; i < numSoldiers; i++){
-		soldiers[i].player = modelRobot;
-	}
-}
-	
 //Create the skybox 1
 function createSkybox(){
 	window.addEventListener('resize', function()
@@ -255,9 +221,9 @@ function createSkybox(){
 	})
 	
 	controls = new OrbitControls(camera, renderer.domElement);
-	//controls.addEventListener('change', renderer);
 	controls.minDistance = 0;
 	controls.maxDistance = 130;
+	
 	//Change the position of the camera
 	camera.position.set(50, 50, 50);
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -279,9 +245,46 @@ function createSkybox(){
 	scene.add(skyBox);
 	scene.add(ambientLight);
 }
-		
-var plane, plane1, plane2, plane3, planeStart;
-var plane1sel, plane2sel, plane3sel;		
+
+async function loadModels(){
+	//adding the robot to the scene
+	var tmp = await promiseModel("models/RobotExpressive.glb");
+	modelRobot = tmp.scene;
+	robot = new Robot(modelRobot);
+	scene.add(robot.model);
+
+	console.log(robot);
+	
+	//adding the soldiers to the scene
+	for(i=0; i < numSoldiers; i++){
+		var tmp = await promiseModel("models/Soldier.glb");
+		modelSoldier = tmp.scene;
+		soldiers[i] = new Soldier(modelSoldier, scene);
+		scene.add(soldiers[i].model);
+		var vertex = ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)];
+		soldiers[i].setPosition(vertex);
+		soldiers[i].player = robot;
+	}
+
+	//creating the arrayOfSoldierMeshesToDetect taking the box meshes from each soldier
+	for(i = 0; i < scene.children.length; i++){
+		if(scene.children[i].name == "soldier"){
+			arrayOfSoldierMeshesToDetect[j] = scene.children[i].children[0].children[3];
+			j++;
+		}
+	}
+
+	//passing the arrayOfSoldierMeshesToDetect & the player-hitbox to each soldier
+	for(i=0; i < numSoldiers; i++){
+		soldiers[i].arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
+		soldiers[i].playerMesh = robot.character.children[3];
+	}
+
+	robot.arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
+
+	inLevel = true;
+}
+
 function initScene(){
 	camera.position.set(0, 0, 65);
 	var geometry = new THREE.PlaneGeometry( window.innerWidth/7, window.innerHeight/7);
@@ -375,6 +378,7 @@ function changeScene(){
 	document.getElementById("lifebar").style.visibility="visible";
 	document.getElementById("bullets").style.visibility="visible";
 	document.getElementById("bulletsNum").style.visibility="visible";
+
 	createGround();
 	createSkybox();
 	loadModels();
@@ -383,10 +387,7 @@ function changeScene(){
 function checkDiedSoldiers(soldier){
     return soldier.model.userData.deadFlag != true;
 }
-		
-//Game logic
-var lev = -1;
-var scenelv = 0;
+
 var update = function(){
 	
 	raycaster.setFromCamera( mouse, camera );
@@ -439,7 +440,6 @@ var update = function(){
 function render(){
 	renderer.clear();
 	
-	//Update the state of the soldiers
 	if(inLevel){
 		if(robot){
 			robot.update(moveForward, moveBackward, moveRight, moveLeft, attack, scene);
@@ -450,6 +450,7 @@ function render(){
     	//Update the controls
 		controls.update(delta);
 
+		//Update the state of the soldiers
 		for(i=0; i < numSoldiers; i++){
         	soldiers[i].checkFlags();
         	if(soldiers[i].model.userData.deadFlag){
@@ -467,21 +468,10 @@ function render(){
 	renderer.render(scene, camera);
 }
 
+//EVENT LISTENERS
 window.addEventListener( 'mousemove', onDocumentMouseMove, false);
 window.addEventListener( 'click', mouseClick, false);
 window.addEventListener( 'keypress', keyListener, false);
-			
-//Run game loop (update, render, repeat)
-/* var GameLoop = function( )
-{	
-	requestAnimationFrame(GameLoop);
-
-	//stats.update();
-	TWEEN.update();
-
-	update();
-	render();
-}; */
 
 init();
 render();		

@@ -53,6 +53,7 @@ export default class Robot {
         var materialCube = new THREE.MeshLambertMaterial({wireframe: true});
         var hitbox = new THREE.Mesh(cube, materialCube);
         hitbox.position.y = 2.2;
+        hitbox.name = "player";
         this.character.add(hitbox);
     }
 
@@ -78,6 +79,7 @@ export default class Robot {
 
     //TODO: fix foreArm rotation
     walk(){
+        var model = this.model;
         var character = this.character;
         character.userData.walkForwardFlag = true;
         character.userData.idleFlag = false;
@@ -98,8 +100,9 @@ export default class Robot {
         var startPosRightLeg = Math.abs(this.rightLeg.rotation.x);
         var startPosRightArm = Math.abs(this.rightArm.rotation.x);
         var startPosRightForeArm = Math.abs(this.rightForeArm.rotation.x);
-        var startPosModelx = character.position.x;
-        var startPosModelz = character.position.z;
+        var startPosModelx = model.position.x;
+        var startPosModelz = model.position.z;
+
 
         var startPosLeftUpLeg = Math.abs(this.leftUpLeg.rotation.x);
         var startPosLeftLeg = Math.abs(this.leftLeg.rotation.x);
@@ -183,8 +186,8 @@ export default class Robot {
             leftArm.rotation.x= position.rotLeftArm;
             // leftForeArm.rotation.x = position.rotLeftForeArm;
 
-            character.position.x = position.posModelx;
-            character.position.z = position.posModelz;
+            model.position.x = position.posModelx;
+            model.position.z = position.posModelz;
         });
 
         var tweenBackA = new TWEEN.Tween(position).to(targetB, 100);
@@ -214,8 +217,8 @@ export default class Robot {
             leftArm.rotation.x = position.rotLeftArm;
             // leftForeArm.rotation.x = position.rotLeftForeArm;
 
-            character.position.x = position.posModelx;
-            character.position.z = position.posModelz;
+            model.position.x = position.posModelx;
+            model.position.z = position.posModelz;
         });
 
         var tweenBackB = new TWEEN.Tween(position).to(targetD, 100);
@@ -635,7 +638,6 @@ export default class Robot {
                         this.character.remove(source);
                         this.character.userData.ammoAttackFlag = false;
                         var enemy = element.object.parent.parent;
-                        console.log(enemy);
                         enemy.userData.isDamagedFlag = true;
                     }
                     break;

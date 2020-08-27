@@ -40,8 +40,8 @@ export default class Soldier {
         this.leftArm.rotation.z = (80/180) * Math.PI;
 
         this.arrayOfSoldierMeshesToDetect = [];
-        //this.player = this.scene.getObjectByName("player");
         this.player = [];
+        this.playerMesh = new THREE.Object3D();
 
         this.bullet = new THREE.Object3D();
         this.health = 100;
@@ -51,7 +51,7 @@ export default class Soldier {
         var cubeMaterial = new THREE.MeshBasicMaterial({wireframe: true });
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.position.set(0, 9, 0);
-        //cube.visible = false;
+        cube.visible = false;
         cube.name = 'enemy';
         this.character.attach(cube);
 
@@ -209,12 +209,6 @@ export default class Soldier {
         
         model.userData.patrolFlag = false;
 
-        /* this.model.userData.canShootFlag = false;
-        this.model.userData.bulletReadyFlag = false;
-        this.model.userData.playerDetectedFlag = false;
-        this.model.userData.aimFlag = false;
-        this.scene.remove(this.bullet); */
-
         var targetPoint = new THREE.Vector3().copy(ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)]);
         targetPoint.y = 0;
 
@@ -329,8 +323,7 @@ export default class Soldier {
         model.userData.shield.position.set(model.position.x, 9, model.position.z);
         scene.add(model.userData.shield);
         
-        this.player = scene.getObjectByName("player");
-        var targetPoint = new THREE.Vector3().copy(this.player.position);
+        var targetPoint = new THREE.Vector3().copy(this.player.model.position);
         targetPoint.y = 0;
 
         var direction = new THREE.Vector3().subVectors(targetPoint, model.position);
@@ -842,7 +835,8 @@ export default class Soldier {
     checkSoldierCollisions(){
         var intersects1 = this.model.userData.raycasterCollision.intersectObjects( this.scene.children );
         var intersects2 = this.model.userData.raycasterCollision.intersectObjects( this.arrayOfSoldierMeshesToDetect );
-        var intersects = intersects1.concat(intersects2);
+        var intersects3 = this.model.userData.raycasterCollision.intersectObject( this.playerMesh );
+        var intersects = intersects1.concat(intersects2, intersects3);
 
         if(this.model.userData.playerDetectedFlag && intersects.length == 0){
             this.tweenAim.stop();
@@ -874,7 +868,9 @@ export default class Soldier {
 
     checkBulletCollisions(){
         var model = this.model;
-        var bulletIntersects = this.bullet.userData.bulletRaycaster.intersectObjects( this.scene.children );
+        var bulletIntersects1 = this.bullet.userData.bulletRaycaster.intersectObjects( this.scene.children );
+        var bulletIntersects2 = this.bullet.userData.bulletRaycaster.intersectObject( this.playerMesh );
+        var bulletIntersects = bulletIntersects1.concat(bulletIntersects2);
 
         if(this.model.userData.bulletReadyFlag && bulletIntersects.length > 0){
             for(var i=0; i < bulletIntersects.length; i++)
