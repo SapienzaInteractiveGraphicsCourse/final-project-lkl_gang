@@ -209,7 +209,7 @@ function createGround(){
     scene.add(ground);
 }
 
-//Create the skybox 1
+//Create the skybox
 function createSkybox(){
 	window.addEventListener('resize', function()
 	{
