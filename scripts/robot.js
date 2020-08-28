@@ -77,7 +77,6 @@ export default class Robot {
         this.life -= 15;
     }
 
-    //TODO: fix foreArm rotation
     walk(){
         var model = this.model;
         var character = this.character;
@@ -85,40 +84,32 @@ export default class Robot {
         character.userData.idleFlag = false;
 
         var rightArm = this.model.getObjectByName('ShoulderR');
-        var rightForeArm = this.model.getObjectByName('LowerArmR');
-
         var leftArm = this.model.getObjectByName('ShoulderL');
-        var leftForeArm = this.model.getObjectByName('LowerArmL');
 
         var rightUpLeg = this.model.getObjectByName('UpperLegR');
         var rightLeg = this.model.getObjectByName('LowerLegR');
-
         var leftUpLeg = this.model.getObjectByName('UpperLegL');
         var leftLeg = this.model.getObjectByName('LowerLegL');
 
         var startPosRightUpLeg = Math.abs(this.rightUpLeg.rotation.x);
         var startPosRightLeg = Math.abs(this.rightLeg.rotation.x);
         var startPosRightArm = Math.abs(this.rightArm.rotation.x);
-        var startPosRightForeArm = Math.abs(this.rightForeArm.rotation.x);
-        var startPosModelx = model.position.x;
-        var startPosModelz = model.position.z;
-
 
         var startPosLeftUpLeg = Math.abs(this.leftUpLeg.rotation.x);
         var startPosLeftLeg = Math.abs(this.leftLeg.rotation.x);
         var startPosLeftArm = Math.abs(this.leftArm.rotation.x);
-        var startPosLeftForeArm = Math.abs(this.leftForeArm.rotation.x);
+
+        var startPosModelx = model.position.x;
+        var startPosModelz = model.position.z;
 
         var position = {
             rotRightUpLeg: startPosRightUpLeg,
             rotRightLeg: startPosRightLeg,
             rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
 
             rotLeftUpLeg: startPosLeftUpLeg,
             rotLeftLeg: startPosLeftLeg,
             rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm,
 
             posModelx: startPosModelx,
             posModelz: startPosModelz
@@ -128,49 +119,43 @@ export default class Robot {
             rotRightUpLeg: 1.4*Math.PI/2,
             rotRightLeg: Math.PI/2,
             rotRightArm: (30/180) * Math.PI,
-            rotRightForeArm: (10/180) * Math.PI,
 
             rotLeftUpLeg: 2.0*Math.PI/2,
             rotLeftLeg: 0.2*Math.PI/2,
             rotLeftArm: -(30/180) * Math.PI,
-            rotLeftForeArm: -(10/180) * Math.PI,
-            posModelx: startPosModelx + 0.4*Math.sin(character.rotation.y),
-            posModelz: startPosModelz + 0.4*Math.cos(character.rotation.y)
+
+            posModelx: startPosModelx + 3*Math.sin(model.rotation.y),
+            posModelz: startPosModelz + 3*Math.cos(model.rotation.y)
         };
         var targetB = {
             rotRightUpLeg: startPosRightUpLeg,
             rotRightLeg: startPosRightLeg,
             rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
 
             rotLeftUpLeg: startPosLeftUpLeg,
             rotLeftLeg: startPosLeftLeg,
             rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
         };
         var targetC = {
             rotRightUpLeg: 2.0*Math.PI/2,
             rotRightLeg: 0.2*Math.PI/2,
             rotRightArm: -(30/180) * Math.PI,
-            rotRightForeArm: -(10/180) * Math.PI,
 
             rotLeftUpLeg: 1.4*Math.PI/2,
             rotLeftLeg: Math.PI/2,
             rotLeftArm: (30/180) * Math.PI,
-            rotLeftForeArm: (10/180) * Math.PI,
-            posModelx: startPosModelx + 0.8*Math.sin(character.rotation.y),
-            posModelz: startPosModelz + 0.8*Math.cos(character.rotation.y)
+
+            posModelx: startPosModelx + 6*Math.sin(model.rotation.y),
+            posModelz: startPosModelz + 6*Math.cos(model.rotation.y)
         };
         var targetD = {
             rotRightUpLeg: startPosRightUpLeg,
             rotRightLeg: startPosRightLeg,
             rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
 
             rotLeftUpLeg: startPosLeftUpLeg,
             rotLeftLeg: startPosLeftLeg,
             rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
         };
 
         this.tweenForwardWalk = new TWEEN.Tween(position).to(targetA, 100);
@@ -179,12 +164,10 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x= position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
 
             model.position.x = position.posModelx;
             model.position.z = position.posModelz;
@@ -196,12 +179,10 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x = position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
         });
 
         var tweenB = new TWEEN.Tween(position).to(targetC, 100);
@@ -210,12 +191,10 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x = position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
 
             model.position.x = position.posModelx;
             model.position.z = position.posModelz;
@@ -227,12 +206,10 @@ export default class Robot {
                 rightUpLeg.rotation.x = position.rotRightUpLeg;
                 rightLeg.rotation.x = position.rotRightLeg;
                 rightArm.rotation.x = position.rotRightArm;
-                // rightForeArm.rotation.x = position.rotRightForeArm;
 
                 leftUpLeg.rotation.x = position.rotLeftUpLeg;
                 leftLeg.rotation.x = position.rotLeftLeg;
                 leftArm.rotation.x = position.rotLeftArm;
-                // leftForeArm.rotation.x = position.rotLeftForeArm;
             });
             tweenBackB.onComplete(() =>{
                 character.userData.walkForwardFlag = false;
@@ -246,46 +223,39 @@ export default class Robot {
         this.tweenForwardWalk.start();
     }
 
-    //TODO: fix leg/arm rotation
     backwardWalk(){
+        var model = this.model;
         var character = this.character;
         character.userData.walkBackwardFlag = true;
         character.userData.idleFlag = false;
 
         var rightArm = this.model.getObjectByName('ShoulderR');
-        var rightForeArm = this.model.getObjectByName('LowerArmR');
-
         var leftArm = this.model.getObjectByName('ShoulderL');
-        var leftForeArm = this.model.getObjectByName('LowerArmL');
 
         var rightUpLeg = this.model.getObjectByName('UpperLegR');
         var rightLeg = this.model.getObjectByName('LowerLegR');
-
         var leftUpLeg = this.model.getObjectByName('UpperLegL');
         var leftLeg = this.model.getObjectByName('LowerLegL');
 
         var startPosRightUpLeg = Math.abs(this.rightUpLeg.rotation.x);
         var startPosRightLeg = Math.abs(this.rightLeg.rotation.x);
         var startPosRightArm = Math.abs(this.rightArm.rotation.x);
-        var startPosRightForeArm = Math.abs(this.rightForeArm.rotation.x);
-        var startPosModelx = character.position.x;
-        var startPosModelz = character.position.z;
 
         var startPosLeftUpLeg = Math.abs(this.leftUpLeg.rotation.x);
         var startPosLeftLeg = Math.abs(this.leftLeg.rotation.x);
         var startPosLeftArm = Math.abs(this.leftArm.rotation.x);
-        var startPosLeftForeArm = Math.abs(this.leftForeArm.rotation.x);
+
+        var startPosModelx = model.position.x;
+        var startPosModelz = model.position.z;
 
         var position = {
             rotRightUpLeg: startPosRightUpLeg,
             rotRightLeg: startPosRightLeg,
             rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
 
             rotLeftUpLeg: startPosLeftUpLeg,
             rotLeftLeg: startPosLeftLeg,
             rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm,
 
             posModelx: startPosModelx,
             posModelz: startPosModelz
@@ -295,49 +265,43 @@ export default class Robot {
             rotRightUpLeg: 1.4*Math.PI/2,
             rotRightLeg: Math.PI/2,
             rotRightArm: (30/180) * Math.PI,
-            rotRightForeArm: (10/180) * Math.PI,
 
             rotLeftUpLeg: 2.0*Math.PI/2,
             rotLeftLeg: 0.2*Math.PI/2,
             rotLeftArm: -(30/180) * Math.PI,
-            rotLeftForeArm: -(10/180) * Math.PI,
-            posModelx: startPosModelx - 0.4*Math.sin(character.rotation.y),
-            posModelz: startPosModelz - 0.4*Math.cos(character.rotation.y)
+
+            posModelx: startPosModelx - 3*Math.sin(model.rotation.y),
+            posModelz: startPosModelz - 3*Math.cos(model.rotation.y)
         };
         var targetB = {
             rotRightUpLeg: startPosRightUpLeg,
             rotRightLeg: startPosRightLeg,
             rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
 
             rotLeftUpLeg: startPosLeftUpLeg,
             rotLeftLeg: startPosLeftLeg,
             rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
         };
         var targetC = {
             rotRightUpLeg: 2.0*Math.PI/2,
             rotRightLeg: 0.2*Math.PI/2,
             rotRightArm: -(30/180) * Math.PI,
-            rotRightForeArm: -(10/180) * Math.PI,
 
             rotLeftUpLeg: 1.4*Math.PI/2,
             rotLeftLeg: Math.PI/2,
             rotLeftArm: (30/180) * Math.PI,
-            rotLeftForeArm: (10/180) * Math.PI,
-            posModelx: startPosModelx - 0.8*Math.sin(character.rotation.y),
-            posModelz: startPosModelz - 0.8*Math.cos(character.rotation.y)
+
+            posModelx: startPosModelx - 6*Math.sin(model.rotation.y),
+            posModelz: startPosModelz - 6*Math.cos(model.rotation.y)
         };
         var targetD = {
             rotRightUpLeg: startPosRightUpLeg,
             rotRightLeg: startPosRightLeg,
             rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
 
             rotLeftUpLeg: startPosLeftUpLeg,
             rotLeftLeg: startPosLeftLeg,
-            rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
+            rotLeftArm: startPosLeftArm
         };
 
         this.tweenBackwardWalk = new TWEEN.Tween(position).to(targetA, 100);
@@ -346,15 +310,13 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x= position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
 
-            character.position.x = position.posModelx;
-            character.position.z = position.posModelz;
+            model.position.x = position.posModelx;
+            model.position.z = position.posModelz;
         });
 
         var tweenBackA = new TWEEN.Tween(position).to(targetB, 100);
@@ -363,12 +325,10 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x = position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
         });
 
         var tweenB = new TWEEN.Tween(position).to(targetC, 100);
@@ -377,15 +337,13 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x = position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
 
-            character.position.x = position.posModelx;
-            character.position.z = position.posModelz;
+            model.position.x = position.posModelx;
+            model.position.z = position.posModelz;
         });
 
         var tweenBackB = new TWEEN.Tween(position).to(targetD, 100);
@@ -394,12 +352,10 @@ export default class Robot {
             rightUpLeg.rotation.x = position.rotRightUpLeg;
             rightLeg.rotation.x = position.rotRightLeg;
             rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
 
             leftUpLeg.rotation.x = position.rotLeftUpLeg;
             leftLeg.rotation.x = position.rotLeftLeg;
             leftArm.rotation.x = position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
         });
         tweenBackB.onComplete(() =>{
             character.userData.walkBackwardFlag = false;
@@ -413,99 +369,53 @@ export default class Robot {
         this.tweenBackwardWalk.start();
     }
 
-    //TODO: fix idle animation
     idle(){
         var character = this.character;
 
         character.userData.idleFlag = false;
 
-        var rightArm = this.model.getObjectByName('ShoulderR');
-        var rightForeArm = this.model.getObjectByName('LowerArmR');
-
-        var leftArm = this.model.getObjectByName('ShoulderL');
-        var leftForeArm = this.model.getObjectByName('LowerArmL');
-
-        var startPosRightArm = Math.abs(this.rightArm.rotation.x);
-        var startPosRightForeArm = Math.abs(this.rightForeArm.rotation.x);
-
-        var startPosLeftArm = Math.abs(this.leftArm.rotation.x);
-        var startPosLeftForeArm = Math.abs(this.leftForeArm.rotation.x);
+        var head = this.model.getObjectByName('Head_0');
+        var startPosHead = Math.abs(head.rotation.z);
 
         var position = {
-            rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
-
-            rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
+            rotHead: startPosHead
         };
 
         var targetA = {
-            rotRightArm: (30/180) * Math.PI,
-            rotRightForeArm: (10/180) * Math.PI,
-
-            rotLeftArm: -(30/180) * Math.PI,
-            rotLeftForeArm: -(10/180) * Math.PI
+            rotHead: -(45/180) * Math.PI
         };
         var targetB = {
-            rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
-
-            rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
+            rotHead: startPosHead
         };
         var targetC = {
-            rotRightArm: -(30/180) * Math.PI,
-            rotRightForeArm: -(10/180) * Math.PI,
-
-            rotLeftArm: (30/180) * Math.PI,
-            rotLeftForeArm: (10/180) * Math.PI
+            rotHead: (45/180) * Math.PI
         };
         var targetD = {
-            rotRightArm: startPosRightArm,
-            rotRightForeArm: startPosRightForeArm,
-
-            rotLeftArm: startPosLeftArm,
-            rotLeftForeArm: startPosLeftForeArm
+            rotHead: startPosHead
         };
 
-        this.tweenIdle = new TWEEN.Tween(position).to(targetA, 100);
+        this.tweenIdle = new TWEEN.Tween(position).to(targetA, 1000);
         this.tweenIdle.easing(TWEEN.Easing.Linear.None);
         this.tweenIdle.onUpdate(function(){
-            rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
-
-            leftArm.rotation.x= position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
+            head.rotation.z = position.rotHead;
         });
 
-        var tweenBackA = new TWEEN.Tween(position).to(targetB, 100);
+        var tweenBackA = new TWEEN.Tween(position).to(targetB, 1000);
         tweenBackA.easing(TWEEN.Easing.Linear.None);
         tweenBackA.onUpdate(function(){
-            rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
-
-            leftArm.rotation.x= position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
+            head.rotation.z = position.rotHead;
         });
 
-        var tweenB = new TWEEN.Tween(position).to(targetC, 100);
+        var tweenB = new TWEEN.Tween(position).to(targetC, 1000);
         tweenB.easing(TWEEN.Easing.Linear.None);
         tweenB.onUpdate(function(){
-            rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
-
-            leftArm.rotation.x = position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
+            head.rotation.z = position.rotHead;
         });
 
-        var tweenBackB = new TWEEN.Tween(position).to(targetD, 100);
+        var tweenBackB = new TWEEN.Tween(position).to(targetD, 1000);
         tweenBackB.easing(TWEEN.Easing.Linear.None);
         tweenBackB.onUpdate(function(){
-            rightArm.rotation.x = position.rotRightArm;
-            // rightForeArm.rotation.x = position.rotRightForeArm;
-
-            leftArm.rotation.x= position.rotLeftArm;
-            // leftForeArm.rotation.x = position.rotLeftForeArm;
+            head.rotation.z = position.rotHead;
         });
 
         this.tweenIdle.chain(tweenBackA);
@@ -516,6 +426,7 @@ export default class Robot {
         this.tweenIdle.start();
     }
 
+    // TODO: detach ammo from model
     attackAnimation(){
         var character = this.character;
         character.userData.attackFlag = true;
@@ -526,28 +437,23 @@ export default class Robot {
         var ammo = this.ammo;
         ammo.position.set(new THREE.Vector3(0,0,0))
         ammo.visible = true;
-        
-        
+
         var startPosRightArm = Math.abs(this.rightArm.rotation.x);
         var startPosRightForeArm = Math.abs(this.rightForeArm.rotation.x);
-        // var startPosAmmo = ammo.position.z;
 
         var position = {
             rotRightArm: startPosRightArm,
             rotRightForeArm: startPosRightForeArm,
-            // posAmmo : startPosAmmo
         };
 
         var targetA = {
             rotRightArm: -(75/180) * Math.PI,
             rotRightForeArm: 0,
-            // posAmmo : startPosAmmo + 3
         };
 
         var targetB = {
             rotRightArm: startPosRightArm,
             rotRightForeArm: startPosRightForeArm,
-            // posAmmo : startPosAmmo
         };
 
         this.tweenAttack = new TWEEN.Tween(position).to(targetA, 500);
@@ -555,18 +461,13 @@ export default class Robot {
         this.tweenAttack.onUpdate(function(){
             rightArm.rotation.x = position.rotRightArm;
             rightForeArm.rotation.x = position.rotRightForeArm;
-            // ammo.position.z = position.posAmmo;
         });
-        // this.tweenAttack.onComplete(function(){
-        //     ammo.visible = false;
-        // })
 
         var tweenBackA = new TWEEN.Tween(position).to(targetB, 500);
         tweenBackA.easing(TWEEN.Easing.Linear.None);
         tweenBackA.onUpdate(function(){
             rightArm.rotation.x = position.rotRightArm;
             rightForeArm.rotation.x = position.rotRightForeArm;
-            // ammo.position.z = position.posAmmo;
         });
         tweenBackA.onComplete(() =>{
             character.userData.attackFlag = false;
@@ -577,18 +478,23 @@ export default class Robot {
         this.tweenAttack.start();
     }
 
-    //TODO: powerup objects interaction
+    //TODO: powerup objects interaction, fix distance from enemy and wall
     checkIntersectionBody(source, scene){
         var direction = new THREE.Vector3();
         source.getWorldDirection(direction);
         var position = source.position.clone();
-        this.raycaster.set(position.multiplyScalar(scale), direction);
-        var intersects = this.raycaster.intersectObjects(scene.children);
+        console.log(position);
+        this.raycaster.set(position, direction);
+        scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 150, 0xff0000) );
+        var intersects1 = this.raycaster.intersectObjects(scene.children);
+        var intersects2 = this.raycaster.intersectObjects(this.arrayOfSoldierMeshesToDetect);
+        var intersects = intersects1.concat(intersects2);
         intersects.forEach((element)=>{
             var object = element.object.name;
             switch(object){
+                case 'enemy': 
                 case 'wall':
-                    if(element.distance < 1.5){
+                    if(element.distance < 18){
                         if(this.tweenForwardWalk){
                            this.tweenForwardWalk.stop();
                            this.character.userData.walkForwardFlag = false;
@@ -596,14 +502,18 @@ export default class Robot {
                     }
             }
         });
-        direction.z = -direction.z;
-        this.raycaster.set(source.position, direction);
-        intersects = this.raycaster.intersectObjects(scene.children);
+        direction.multiplyScalar(-1);
+        this.raycaster.set(position, direction);
+        scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 150, 0x0000ff) );
+        intersects1 = this.raycaster.intersectObjects(scene.children);
+        intersects2 = this.raycaster.intersectObjects(this.arrayOfSoldierMeshesToDetect);
+        intersects = intersects1.concat(intersects2);
         intersects.forEach((element)=>{
             var object = element.object.name;
             switch(object){
+                case 'enemy': 
                 case 'wall':
-                    if(element.distance < 1){
+                    if(element.distance < 18){
                         if(this.tweenBackwardWalk){
                            this.tweenBackwardWalk.stop();
                            this.character.userData.walkBackwardFlag = false;
@@ -614,20 +524,16 @@ export default class Robot {
 
     }
 
-    //TODO: damage to enemy
     checkIntersectionAmmmo(source, scene){
         source.position.z += 0.5;
         var ammoPosition = new THREE.Vector3();
         var ammoDirection = new THREE.Vector3();
         source.getWorldPosition(ammoPosition);
         source.getWorldDirection(ammoDirection);
-        var raycasterAmmo = new THREE.Raycaster(ammoPosition, ammoDirection);
-        var intersects1 = raycasterAmmo.intersectObjects(scene.children);
-        var intersects2 = raycasterAmmo.intersectObjects(this.arrayOfSoldierMeshesToDetect);
+        var raycasterAmmoCenter = new THREE.Raycaster(ammoPosition, ammoDirection);
+        var intersects1 = raycasterAmmoCenter.intersectObjects(scene.children);
+        var intersects2 = raycasterAmmoCenter.intersectObjects(this.arrayOfSoldierMeshesToDetect);
         var intersects = intersects1.concat(intersects2);
-
-        if(intersects.length > 0)
-            console.log(intersects);
 
         intersects.forEach((element)=>{
             var object = element.object.name;
@@ -655,9 +561,10 @@ export default class Robot {
         });
     }
 
-    update(moveForward, moveBackward, moveRight, moveLeft, attack, scene){
+    update(moveForward, moveBackward, moveRight, moveLeft, attack, scene, bullets){
 
         var character = this.character;
+        var model = this.model;
 
         if(moveForward && !character.userData.walkForwardFlag){
             if(this.tweenIdle){
@@ -686,14 +593,14 @@ export default class Robot {
         }
 
         if(moveRight){
-            character.rotation.y -= Math.PI/50;
+            model.rotation.y -= Math.PI/50;
         }
 
         else if(moveLeft){
-            character.rotation.y += Math.PI/50;
+            model.rotation.y += Math.PI/50;
         }
         
-        this.checkIntersectionBody(character, scene);
+        this.checkIntersectionBody(model, scene);
         if(character.userData.ammoAttackFlag)
             this.checkIntersectionAmmmo(this.ammo, scene);
     }
