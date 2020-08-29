@@ -1,2 +1,2 @@
 # final-project-lkl_gang
-We're developing a third person action game.
+We are developing a third person action game.
