@@ -484,13 +484,11 @@ export default class Robot {
         
         //New code
         var b_num = document.getElementById("bulletsNum");
-		//this.n_bullets = parseInt(b_num.textContent);
 		if(this.n_bullets > 0)
 			b_num.textContent = this.n_bullets-1;
 			if(this.n_bullets - 1 == 0)
                 document.getElementById("recharge").style.visibility = "visible";
         this.n_bullets = this.n_bullets - 1;
-        //console.log(this.n_bullets);
     }
 
     //TODO: powerup objects interaction, fix distance from enemy and wall
