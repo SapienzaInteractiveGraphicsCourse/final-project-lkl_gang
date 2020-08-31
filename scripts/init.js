@@ -361,7 +361,7 @@ function changeLevel(value){
 function changeScene(){
 	window.removeEventListener( 'mousemove', onDocumentMouseMove, false);
 	window.removeEventListener( 'click', mouseClick, false);
-	window.removeEventListener( 'keypress', keyListener, false);
+	//window.removeEventListener( 'keypress', keyListener, false);
 
 	scene.remove(plane);
 	scene.remove(plane1);
