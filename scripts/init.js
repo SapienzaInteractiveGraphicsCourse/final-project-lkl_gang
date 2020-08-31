@@ -45,6 +45,7 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var attack = false;
+//var n_bullets = 10;
 
 //LIGHTS
 var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
@@ -69,10 +70,12 @@ var onKeyDown = function ( event ) {
 			moveRight = true;
 			break;
 		case 32:
-			attack = true;
+			if(robot.n_bullets > 0)
+				attack = true;
 			break;
 	}
 };
+
 
 var onKeyUp = function ( event ) {
 	switch ( event.keyCode ) {
@@ -129,17 +132,10 @@ function onDocumentMouseMove( event ) {
 function keyListener(event){ 
     event = event || window.event; //capture the event, and ensure we have an event
     var key = event.key || event.which || event.keyCode; //find the key that was pressed
-    if(key == ' '){
-		var b_num = document.getElementById("bulletsNum");
-		var n = parseInt(b_num.textContent);
-		if(n > 0)
-			b_num.textContent = n-1;
-			if(n-1 == 0)
-				document.getElementById("recharge").style.visibility = "visible";
-	}
 	if(key == 'r'){
 		var b_num = document.getElementById("bulletsNum");
 		b_num.textContent = 10;
+		robot.n_bullets = 10;
 		document.getElementById("recharge").style.visibility = "hidden";
 	}
 }
