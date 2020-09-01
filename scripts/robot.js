@@ -44,8 +44,8 @@ export default class Robot {
 
         this.raycaster = new THREE.Raycaster(new THREE.Vector3(),new THREE.Vector3(), 0, 10);
 
-        var geometry = new THREE.SphereGeometry( 2.5, 32, 32 );
-        var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+        var geometry = new THREE.SphereGeometry( 3, 32, 32 );
+        var material = new THREE.MeshPhongMaterial( {map: new THREE.TextureLoader().load('textures/plasmaball.png')} );
         var sphere = new THREE.Mesh( geometry, material );
         this.ammo = sphere;
         this.ammoDirection = new THREE.Vector3();
@@ -391,6 +391,7 @@ export default class Robot {
         character.userData.idleFlag = false;
 
         var head = this.model.getObjectByName('Head_0');
+        head.rotation.z = 0;
         var startPosHead = Math.abs(head.rotation.z);
 
         var position = {
@@ -442,7 +443,6 @@ export default class Robot {
         this.tweenIdle.start();
     }
 
-    // TODO: detach ammo from model
     attackAnimation(){
         var character = this.character;
         character.userData.attackFlag = true;
@@ -584,25 +584,26 @@ export default class Robot {
         var character = this.character;
         var model = this.model;
 
-        if(moveForward && !character.userData.walkForwardFlag){
-            if(this.tweenIdle){
-                this.tweenIdle.stop();
+         if(!character.userData.walkForwardFlag && !character.userData.walkBackwardFlag){
+            if(moveForward){
+                if(this.tweenIdle){
+                    this.tweenIdle.stop();
+                }
+                this.walk();
             }
-            this.walk();
+            else if(moveBackward){
+                if(this.tweenIdle){
+                    this.tweenIdle.stop();
+                }
+                this.backwardWalk();
+            }
         }
 
-        else if(moveBackward && !character.userData.walkBackwardFlag){
-            if(this.tweenIdle){
-                this.tweenIdle.stop();
-            }
-            this.backwardWalk();
-        }
-
-        else if(character.userData.idleFlag){
+        if(character.userData.idleFlag){
             this.idle();
         }
 
-        else if(attack && !character.userData.attackFlag){
+        if(attack && !character.userData.attackFlag){
             if(this.tweenIdle){
                 this.tweenIdle.stop();
             }
