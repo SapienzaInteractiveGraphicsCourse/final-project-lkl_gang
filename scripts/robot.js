@@ -42,12 +42,13 @@ export default class Robot {
         this.leftFoot = model.getObjectByName('FootL');
         this.leftLeg.attach(this.leftFoot);
 
-        this.raycaster = new THREE.Raycaster();
+        this.raycaster = new THREE.Raycaster(new THREE.Vector3(),new THREE.Vector3(), 0, 10);
 
-        var geometry = new THREE.SphereGeometry( 0.4, 32, 32 );
+        var geometry = new THREE.SphereGeometry( 2.5, 32, 32 );
         var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
         var sphere = new THREE.Mesh( geometry, material );
         this.ammo = sphere;
+        this.ammoDirection = new THREE.Vector3();
 
         //hitbox
         var cube = new THREE.BoxGeometry(2.8,4.2,2.5);
@@ -58,9 +59,13 @@ export default class Robot {
         this.character.add(hitbox);
     }
 
-    setAmmo(){
-        this.character.add(this.ammo);
-        this.ammo.position.set(-1,1.5,1.4);
+    setAmmo(scene){
+        var ammoStartPosition = new THREE.Vector3();
+        this.model.getObjectByName('LowerArmR').getWorldPosition(ammoStartPosition);
+        this.model.getWorldDirection(this.ammoDirection);
+        this.ammo.position.set(ammoStartPosition.x, ammoStartPosition.y, ammoStartPosition.z);
+        this.ammo.userData.raycaster = new THREE.Raycaster(this.ammo.position, this.ammoDirection, 0, 7);
+        scene.attach(this.ammo);
         this.character.userData.ammoAttackFlag = true;
     }
 
@@ -87,6 +92,9 @@ export default class Robot {
         var character = this.character;
         character.userData.walkForwardFlag = true;
         character.userData.idleFlag = false;
+
+        var head = this.model.getObjectByName('Head_0');
+        head.rotation.z = 0;
 
         var rightArm = this.model.getObjectByName('ShoulderR');
         var leftArm = this.model.getObjectByName('ShoulderL');
@@ -233,6 +241,9 @@ export default class Robot {
         var character = this.character;
         character.userData.walkBackwardFlag = true;
         character.userData.idleFlag = false;
+
+        var head = this.model.getObjectByName('Head_0');
+        head.rotation.z = 0;
 
         var rightArm = this.model.getObjectByName('ShoulderR');
         var leftArm = this.model.getObjectByName('ShoulderL');
@@ -437,6 +448,9 @@ export default class Robot {
         character.userData.attackFlag = true;
         character.userData.idleFlag = false;
 
+        var head = this.model.getObjectByName('Head_0');
+        head.rotation.z = 0;
+
         var rightArm = this.model.getObjectByName('ShoulderR');
         var rightForeArm = this.model.getObjectByName('LowerArmR');
         var ammo = this.ammo;
@@ -461,14 +475,14 @@ export default class Robot {
             rotRightForeArm: startPosRightForeArm,
         };
 
-        this.tweenAttack = new TWEEN.Tween(position).to(targetA, 500);
+        this.tweenAttack = new TWEEN.Tween(position).to(targetA, 200);
         this.tweenAttack.easing(TWEEN.Easing.Linear.None);
         this.tweenAttack.onUpdate(function(){
             rightArm.rotation.x = position.rotRightArm;
             rightForeArm.rotation.x = position.rotRightForeArm;
         });
 
-        var tweenBackA = new TWEEN.Tween(position).to(targetB, 500);
+        var tweenBackA = new TWEEN.Tween(position).to(targetB, 200);
         tweenBackA.easing(TWEEN.Easing.Linear.None);
         tweenBackA.onUpdate(function(){
             rightArm.rotation.x = position.rotRightArm;
@@ -492,13 +506,11 @@ export default class Robot {
     }
 
     //TODO: powerup objects interaction, fix distance from enemy and wall
-    checkIntersectionBody(source, scene){
+    checkIntersectionBody(scene){
         var direction = new THREE.Vector3();
-        source.getWorldDirection(direction);
-        var position = source.position.clone();
-        console.log(position);
-        this.raycaster.set(position, direction);
-        scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 150, 0xff0000) );
+        this.model.getWorldDirection(direction);
+        this.raycaster.set(this.model.position, direction);
+        // scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 150, 0xff0000) );
         var intersects1 = this.raycaster.intersectObjects(scene.children);
         var intersects2 = this.raycaster.intersectObjects(this.arrayOfSoldierMeshesToDetect);
         var intersects = intersects1.concat(intersects2);
@@ -507,17 +519,16 @@ export default class Robot {
             switch(object){
                 case 'enemy': 
                 case 'wall':
-                    if(element.distance < 18){
-                        if(this.tweenForwardWalk){
-                           this.tweenForwardWalk.stop();
-                           this.character.userData.walkForwardFlag = false;
-                        }
+                    if(this.tweenForwardWalk){
+                        this.tweenForwardWalk.stop();
+                        this.character.userData.walkForwardFlag = false;
                     }
+                    break;
             }
         });
         direction.multiplyScalar(-1);
-        this.raycaster.set(position, direction);
-        scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 150, 0x0000ff) );
+        this.raycaster.set(this.model.position, direction);
+        // scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 150, 0x0000ff) );
         intersects1 = this.raycaster.intersectObjects(scene.children);
         intersects2 = this.raycaster.intersectObjects(this.arrayOfSoldierMeshesToDetect);
         intersects = intersects1.concat(intersects2);
@@ -526,50 +537,44 @@ export default class Robot {
             switch(object){
                 case 'enemy': 
                 case 'wall':
-                    if(element.distance < 18){
-                        if(this.tweenBackwardWalk){
-                           this.tweenBackwardWalk.stop();
-                           this.character.userData.walkBackwardFlag = false;
-                        }
+                    if(this.tweenBackwardWalk){
+                        this.tweenBackwardWalk.stop();
+                        this.character.userData.walkBackwardFlag = false;
                     }
+                    break;
             }
         });
 
     }
 
-    checkIntersectionAmmmo(source, scene){
-        source.position.z += 0.5;
-        var ammoPosition = new THREE.Vector3();
-        var ammoDirection = new THREE.Vector3();
-        source.getWorldPosition(ammoPosition);
-        source.getWorldDirection(ammoDirection);
-        var raycasterAmmoCenter = new THREE.Raycaster(ammoPosition, ammoDirection);
-        var intersects1 = raycasterAmmoCenter.intersectObjects(scene.children);
-        var intersects2 = raycasterAmmoCenter.intersectObjects(this.arrayOfSoldierMeshesToDetect);
+    checkIntersectionAmmmo(scene){
+        this.ammo.position.z += 4*this.ammoDirection.z;
+        this.ammo.position.x += 4*this.ammoDirection.x;
+    
+        var raycaster = this.ammo.userData.raycaster;
+        raycaster.ray.origin = new THREE.Vector3(this.ammo.position.x, this.ammo.position.y, this.ammo.position.z);
+
+        var intersects1 = raycaster.intersectObjects(scene.children);
+        var intersects2 = raycaster.intersectObjects(this.arrayOfSoldierMeshesToDetect);
         var intersects = intersects1.concat(intersects2);
 
         intersects.forEach((element)=>{
             var object = element.object.name;
             switch(object){
                 case 'enemy':
-                    if(element.distance < 2.5){
-                        console.log('hit');
-                        this.character.remove(source);
-                        this.character.userData.ammoAttackFlag = false;
-                        var enemy = element.object.parent.parent;
-                        enemy.userData.isDamagedFlag = true;
-                    }
+                    scene.remove(this.ammo);
+                    this.character.userData.ammoAttackFlag = false;
+                    var enemy = element.object.parent.parent;
+                    enemy.userData.isDamagedFlag = true;
                     break;
                 case 'wall':
-                    if(element.distance < 2.5){
-                        this.character.remove(source);
-                        this.character.userData.ammoAttackFlag = false;
-                    }
+                    scene.remove(this.ammo);
+                    this.character.userData.ammoAttackFlag = false;
+                    break;
                 case 'shield':
-                    if(element.distance < 2.5){
-                        this.character.remove(source);
-                        this.character.userData.ammoAttackFlag = false;
-                    }
+                    scene.remove(this.ammo);
+                    this.character.userData.ammoAttackFlag = false;
+                    break;
             }
         });
     }
@@ -602,7 +607,7 @@ export default class Robot {
                 this.tweenIdle.stop();
             }
             this.attackAnimation();
-            this.setAmmo();
+            this.setAmmo(scene);
         }
 
         if(moveRight){
@@ -613,8 +618,8 @@ export default class Robot {
             model.rotation.y += Math.PI/50;
         }
         
-        this.checkIntersectionBody(model, scene);
+        this.checkIntersectionBody(scene);
         if(character.userData.ammoAttackFlag)
-            this.checkIntersectionAmmmo(this.ammo, scene);
+            this.checkIntersectionAmmmo(scene);
     }
 }
