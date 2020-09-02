@@ -192,7 +192,7 @@ function promiseModel(path){
 }
 
 function createGround(){
-    var groundMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/floor.png')});
+    var groundMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/floor.png'), side: THREE.DoubleSide});
 
     var groundGeometry = new THREE.PlaneGeometry(120, 120, 100, 100);
     groundGeometry.rotateX(-Math.PI/2);
@@ -202,7 +202,34 @@ function createGround(){
 
     ground = new THREE.Mesh(groundGeometry, groundMaterial, 0, 100, 100);
     ground.name = "ground";
-    scene.add(ground);
+	scene.add(ground);
+	
+	//Create walls
+	var wallMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/wall.png')});
+	var wallGeometry1 = new THREE.BoxGeometry(120, 16, 5);
+	var wallGeometry2 = new THREE.BoxGeometry(130, 16, 5);
+	
+	var wall1 = new THREE.Mesh(wallGeometry1, wallMaterial);
+	scene.add(wall1);
+	wall1.name = "wall";
+	wall1.position.set(0, 8, 62.5);
+
+	var wall2 = new THREE.Mesh(wallGeometry1, wallMaterial);
+	scene.add(wall2);
+	wall2.name = "wall";
+	wall2.position.set(0, 8, -62.5);
+
+	var wall3 = new THREE.Mesh(wallGeometry2, wallMaterial);
+	scene.add(wall3);
+	wall3.name = "wall";
+	wall3.rotateY(-Math.PI/2);
+	wall3.position.set(-62.5, 8, 0);
+
+	var wall4 = new THREE.Mesh(wallGeometry2, wallMaterial);
+	scene.add(wall4);
+	wall4.name = "wall";
+	wall4.rotateY(-Math.PI/2);
+	wall4.position.set(62.5, 8, 0);
 }
 
 //Create the skybox
