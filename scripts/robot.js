@@ -92,10 +92,6 @@ export default class Robot {
         if(this.getLife() > 0)
             this.life -= 10;
         this.lowerLifeBarPlayer(Math.floor(this.getLife()/10));
-        /*if(this.getLife() <= 0){
-            this.life = 0;
-            window.alert("YOU LOST!");
-        }*/
     }
 
     walk(){
@@ -633,5 +629,13 @@ export default class Robot {
         this.checkIntersectionBody(scene);
         if(character.userData.ammoAttackFlag)
             this.checkIntersectionAmmmo(scene);
+    }
+    
+    reset(){
+        this.model.rotation.y = 0;
+        this.life = 100;
+        this.n_bullets = 10;
+
+        this.arrayOfSoldierMeshesToDetect = [];
     }
 }
