@@ -49,6 +49,7 @@ export default class Robot {
         var sphere = new THREE.Mesh( geometry, material );
         this.ammo = sphere;
         this.ammoDirection = new THREE.Vector3();
+        this.damage = 20;
 
         //hitbox
         var cube = new THREE.BoxGeometry(2.8,4.2,2.5);

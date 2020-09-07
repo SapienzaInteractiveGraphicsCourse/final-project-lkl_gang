@@ -30,6 +30,7 @@ var restartGame = false;
 //Game logic
 var lev = -1;
 var scenelv = 0;
+var gameDifficulty;
 
 var inLevel = false;
 var i, j = 0;
@@ -149,6 +150,7 @@ function mouseClick( event ) {
 	if(bars == false){
 		if (intersects1.length > 0){ 
 			//console.log("easy");
+			gameDifficulty = 0;
 			scene.remove(plane1);
 			scene.add(plane2);
 			scene.add(plane3);
@@ -159,6 +161,7 @@ function mouseClick( event ) {
 		}
 		if (intersects2.length > 0){ 
 			//console.log("medium");
+			gameDifficulty = 1;
 			scene.remove(plane2);
 			scene.add(plane1);
 			scene.add(plane3);
@@ -169,6 +172,7 @@ function mouseClick( event ) {
 		}
 		if (intersects3.length > 0){ 
 			//console.log("hard");
+			gameDifficulty = 2;
 			scene.remove(plane3);
 			scene.add(plane1);
 			scene.add(plane2);
@@ -238,15 +242,6 @@ function createGround(){
 
 //Create the skybox
 function createSkybox(){
-	window.addEventListener('resize', function()
-	{
-		var width = window.innerWidth;
-		var height = window.innerHeight;
-		renderer.setSize(width, height);
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
-	})
-	
 	controls = new OrbitControls(camera, renderer.domElement);
 	controls.minDistance = 0;
 	controls.maxDistance = 130;
@@ -290,6 +285,7 @@ async function loadModels(){
 		scene.add(soldiers[i].model);
 		var vertex = ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)];
 		soldiers[i].setPosition(vertex);
+		soldiers[i].setParameters(gameDifficulty);
 		soldiers[i].player = robot;
 	}
 
@@ -529,7 +525,7 @@ function render(){
         	if(soldiers[i].model.userData.deadFlag){
             	soldiers = soldiers.filter(checkDiedSoldiers);
             	numSoldiers = soldiers.length;
-            	console.log(soldiers);
+            	//console.log(soldiers);
         	}
 		}
 	}
@@ -545,6 +541,13 @@ function render(){
 window.addEventListener( 'mousemove', onDocumentMouseMove, false);
 window.addEventListener( 'click', mouseClick, false);
 window.addEventListener( 'keypress', keyListener, false);
+window.addEventListener( 'resize', function(){
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width/height;
+    camera.updateProjectionMatrix();
+});
 
 init();
 render();	
