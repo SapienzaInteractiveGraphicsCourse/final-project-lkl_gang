@@ -839,19 +839,11 @@ export default class Soldier {
     }
 
     updateHealth(){
-<<<<<<< HEAD
         var damage = this.player.damage;    
         this.health = this.health - damage;
 
         var healthBar = this.model.getObjectByName("healthBar");
         
-=======
-        var damage = this.player.damage;
-        this.health = this.health - damage;
-
-        var healthBar = this.model.getObjectByName("healthBar");
-
->>>>>>> 358121d87a6561a1372b61f04b530f4061351be1
         switch(this.gameDifficulty){
             case 0:
                 var newWidth = (10 * this.health)/100;
