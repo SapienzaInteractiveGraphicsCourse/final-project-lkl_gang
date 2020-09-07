@@ -6,6 +6,12 @@
 	height: 10%;
 }
 
+#gameOverImage{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
 #lifebar{
 	position: absolute;
 	top: 90%;
@@ -44,12 +50,28 @@
 	height: 21%;
 }
 
+#GameOver{
+	position:absolute;
+	top: 20%;
+	left: 22%;
+	width: 62%;
+	height: 21%;
+}
+
 #bulletsNum{
 	position:absolute;
 	font-size: 50px;
 	color: #FFFF00;
 	top: 88%;
 	left: 13%;
+}
+
+#playButton{
+	position:absolute;
+	width: 10%;
+	height: 10%;
+	top: 60%;
+	left: 44%;
 }
 
 #speaker{
@@ -74,6 +96,14 @@
 	color: #FFFF00;
 	top: 91%;
 	left: 17%;
+}
+
+#restart{
+	position: absolute;
+	font-size: 50px;
+	color: #FFFF00;
+	top: 50%;
+	left: 32%;
 }
 
 #overlay {

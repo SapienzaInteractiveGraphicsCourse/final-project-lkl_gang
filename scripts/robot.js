@@ -83,8 +83,18 @@ export default class Robot {
         return this.n_bullets;
     }
 
+    lowerLifeBarPlayer(value){
+        document.getElementById('lifebar').src = './img/lifebar/lifeBar_' + value + '.png'; 
+    }
+
     addDamage(){
-        this.life -= 15;
+        if(this.getLife() > 0)
+            this.life -= 10;
+        this.lowerLifeBarPlayer(Math.floor(this.getLife()/10));
+        /*if(this.getLife() <= 0){
+            this.life = 0;
+            window.alert("YOU LOST!");
+        }*/
     }
 
     walk(){

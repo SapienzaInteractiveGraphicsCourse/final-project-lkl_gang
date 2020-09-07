@@ -6,6 +6,8 @@ import Stats from "/js/stats.module.js";
 
 //VARIABLES
 var scene;
+var skyBox;
+var wall1, wall2, wall3, wall4;
 var camera, initCamera;
 var renderer, initRenderer;
 var controls;
@@ -21,6 +23,9 @@ var plane1sel, plane2sel, plane3sel;
 
 var chScene = false;
 var bars = false;
+
+var gameOver = false;
+var restartGame = false;
 
 //Game logic
 var lev = -1;
@@ -45,7 +50,6 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var attack = false;
-//var n_bullets = 10;
 
 //LIGHTS
 var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
@@ -209,23 +213,23 @@ function createGround(){
 	var wallGeometry1 = new THREE.BoxGeometry(120, 16, 5);
 	var wallGeometry2 = new THREE.BoxGeometry(130, 16, 5);
 	
-	var wall1 = new THREE.Mesh(wallGeometry1, wallMaterial);
+	wall1 = new THREE.Mesh(wallGeometry1, wallMaterial);
 	scene.add(wall1);
 	wall1.name = "wall";
 	wall1.position.set(0, 8, 62.5);
 
-	var wall2 = new THREE.Mesh(wallGeometry1, wallMaterial);
+	wall2 = new THREE.Mesh(wallGeometry1, wallMaterial);
 	scene.add(wall2);
 	wall2.name = "wall";
 	wall2.position.set(0, 8, -62.5);
 
-	var wall3 = new THREE.Mesh(wallGeometry2, wallMaterial);
+	wall3 = new THREE.Mesh(wallGeometry2, wallMaterial);
 	scene.add(wall3);
 	wall3.name = "wall";
 	wall3.rotateY(-Math.PI/2);
 	wall3.position.set(-62.5, 8, 0);
 
-	var wall4 = new THREE.Mesh(wallGeometry2, wallMaterial);
+	wall4 = new THREE.Mesh(wallGeometry2, wallMaterial);
 	scene.add(wall4);
 	wall4.name = "wall";
 	wall4.rotateY(-Math.PI/2);
@@ -264,7 +268,7 @@ function createSkybox(){
 		
 	//Create a material, colour or image texture
 	var skyboxMaterial = new THREE.MeshFaceMaterial(skyboxMaterials);
-	var skyBox = new THREE.Mesh(geometry, skyboxMaterial);
+	skyBox = new THREE.Mesh(geometry, skyboxMaterial);
 	scene.add(skyBox);
 	scene.add(ambientLight);
 }
@@ -373,9 +377,9 @@ function initScene(){
 	document.addEventListener( 'keyup', onKeyUp, false );
 }
 
-function lowerLifeBarPlayer(value){
+/*function lowerLifeBarPlayer(value){
 	document.getElementById('lifebar').src = './img/lifebar/lifeBar_' + value + '.png'; 
-}
+}*/
 
 function changeLevel(value){
 	document.getElementById('level_num').src = './img/lev_' + value + '.png'; 
@@ -407,8 +411,45 @@ function changeScene(){
 	loadModels();
 }
 
+function gameOverScene(){
+	document.getElementById("level").style.visibility="hidden";
+	document.getElementById("level_num").style.visibility="hidden";
+	document.getElementById("lifebar").style.visibility="hidden";
+	document.getElementById("bullets").style.visibility="hidden";
+	document.getElementById("bulletsNum").style.visibility="hidden";
+
+	scene.remove(robot.model);
+	for(i=0; i < numSoldiers; i++){
+		scene.remove(soldiers[i].model);
+	}
+	
+	scene.remove(skyBox);
+	scene.remove(ambientLight);
+
+	scene.remove(ground);
+	scene.remove(wall1);
+	scene.remove(wall2);
+	scene.remove(wall3);
+	scene.remove(wall4);
+
+	document.getElementById('lifebar').src = './img/lifebar/lifeBar_0.png'; 
+	gameOver = true;
+	document.getElementById("GameOverImage").style.visibility = "visible";
+	document.getElementById("playButton").style.visibility = "visible";
+	/*document.getElementById("GameOver").style.visibility = "visible";
+	document.getElementById("restart").style.visibility = "visible";*/
+
+}
+
 function checkDiedSoldiers(soldier){
     return soldier.model.userData.deadFlag != true;
+}
+
+function resetGame(){
+	initScene();
+	window.addEventListener( 'mousemove', onDocumentMouseMove, false);
+	window.addEventListener( 'click', mouseClick, false);
+	window.addEventListener( 'keypress', keyListener, false);
 }
 
 var update = function(){
@@ -450,11 +491,11 @@ var update = function(){
 	else if(lev = 100){
 		lev = -1;
 	}
-	if(bars == true && scenelv < 1000){
+	/*if(bars == true && scenelv < 1000){
 		scenelv = scenelv + 1;
 		lowerLifeBarPlayer(Math.floor((scenelv)/100));
 		changeLevel(1 + Math.floor((scenelv)/400));
-	}
+	}*/
 	
 	lev = lev + 1;
 };
@@ -462,10 +503,19 @@ var update = function(){
 //Draw scene
 function render(){
 	renderer.clear();
+
+	if(restartGame == true){
+		console.log("Dentro");
+		resetGame();
+	}
 	
-	if(inLevel){
+	if(inLevel && !gameOver){
 		if(robot){
 			robot.update(moveForward, moveBackward, moveRight, moveLeft, attack, scene);
+		}
+
+		if(robot.getLife() <= 0){
+			gameOverScene();
 		}
 
 		var delta = clock.getDelta();
@@ -497,4 +547,4 @@ window.addEventListener( 'click', mouseClick, false);
 window.addEventListener( 'keypress', keyListener, false);
 
 init();
-render();		
+render();	

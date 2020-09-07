@@ -17,15 +17,17 @@
 				<label id="recharge">Press 'R' to recharge</label>
 			</form>
 			<img id="title" src="img/title.png"></img>
+			<img id="GameOverImage" src="img/gameOverImage.png"></img>
 			<img id="Menu" src="img/difficulty.png"></img>
 			<img id="level" src="img/level.png"></img>
 			<img id="level_num" src="img/lev_1.png"></img>
-			<img id="lifebar" src="img/lifebar/lifeBar_0.png"></img>
+			<img id="lifebar" src="img/lifebar/lifeBar_10.png"></img>
 			<img id="bullets" src="img/bullets.png"></img>
 		</div>
 		<script>
 			document.getElementById("title").style.visibility = "visible";
 			document.getElementById("Menu").style.visibility = "visible";
+			document.getElementById("GameOverImage").style.visibility = "hidden";
 			document.getElementById("level").style.visibility = "hidden";
 			document.getElementById("level_num").style.visibility = "hidden";
 			document.getElementById("lifebar").style.visibility = "hidden";
@@ -39,6 +41,7 @@
 		<script>
 			var audio = new Audio("halo_theme_song.mp3");
 			var musicOn = false;
+			var restartGame = false;
 			
 			audio.loop = true;
 			audio.onended = function(){
@@ -61,11 +64,19 @@
 			}
 			
 		</script>
+		<script>
+			function newGame(){
+				console.log("Start a new game");
+				restartGame = true;
+			}
+		</script>
 		<img id="speaker" src="img/speaker.png" onclick="audioChange()"></audio>
 		<img id="speakerMute" src="img/speakerMute.png" onclick="audioChange()"></audio>
+		<img id="playButton" src="img/playButton.png" onclick="newGame()"></img>
 		<script>
 			document.getElementById("speaker").style.visibility = "hidden";
 			document.getElementById("speakerMute").style.visibility = "visible";
+			document.getElementById("playButton").style.visibility = "hidden";
 		</script>
 	</body>
 </html>
