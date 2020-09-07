@@ -913,7 +913,6 @@ export default class Soldier {
             for(var i=0; i < bulletIntersects.length; i++)
                 if(bulletIntersects[i].object.name == "wall" || bulletIntersects[i].object.name == "player"){
                     if(bulletIntersects[i].object.name == "player"){
-                        console.log("Danni da agg");
                         this.player.addDamage();
                         //this.lowerLifeBarPlayer(Math.floor(this.player.getLife()/10));
                     }

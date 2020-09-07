@@ -243,15 +243,6 @@ function createGround(){
 
 //Create the skybox
 function createSkybox(){
-	/*window.addEventListener('resize', function()
-	{
-		var width = window.innerWidth;
-		var height = window.innerHeight;
-		renderer.setSize(width, height);
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
-	})*/
-	
 	controls = new OrbitControls(camera, renderer.domElement);
 	controls.minDistance = 0;
 	controls.maxDistance = 130;
@@ -472,7 +463,6 @@ function gameOverScene(){
 	document.getElementById("GameOverImage").style.visibility = "visible";
 	document.getElementById("playButton").style.visibility = "visible";
 	document.getElementById("playButton").addEventListener('click', resetGame, false);
-	//document.getElementById("restart").style.visibility = "visible";*/
 
 }
 
