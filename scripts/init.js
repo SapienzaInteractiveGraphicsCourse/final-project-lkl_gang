@@ -30,6 +30,7 @@ var restartGame = false;
 //Game logic
 var lev = -1;
 var scenelv = 0;
+var gameDifficulty;
 
 var inLevel = false;
 var i, j = 0;
@@ -149,6 +150,7 @@ function mouseClick( event ) {
 	if(bars == false){
 		if (intersects1.length > 0){ 
 			//console.log("easy");
+			gameDifficulty = 0;
 			scene.remove(plane1);
 			scene.add(plane2);
 			scene.add(plane3);
@@ -159,6 +161,7 @@ function mouseClick( event ) {
 		}
 		if (intersects2.length > 0){ 
 			//console.log("medium");
+			gameDifficulty = 1;
 			scene.remove(plane2);
 			scene.add(plane1);
 			scene.add(plane3);
@@ -169,6 +172,7 @@ function mouseClick( event ) {
 		}
 		if (intersects3.length > 0){ 
 			//console.log("hard");
+			gameDifficulty = 2;
 			scene.remove(plane3);
 			scene.add(plane1);
 			scene.add(plane2);
@@ -181,6 +185,7 @@ function mouseClick( event ) {
 	
 	if(intersectsStart.length > 0 && chScene == true){
 		bars = true;
+		gameOver = false;
 		scene.remove(plane1sel);
 		scene.remove(plane2sel);
 		scene.remove(plane3sel);
@@ -238,14 +243,14 @@ function createGround(){
 
 //Create the skybox
 function createSkybox(){
-	window.addEventListener('resize', function()
+	/*window.addEventListener('resize', function()
 	{
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 		renderer.setSize(width, height);
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
-	})
+	})*/
 	
 	controls = new OrbitControls(camera, renderer.domElement);
 	controls.minDistance = 0;
@@ -254,6 +259,8 @@ function createSkybox(){
 	//Change the position of the camera
 	camera.position.set(50, 50, 50);
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+	controls.saveState();
 	
 	var geometry = new THREE.CubeGeometry(1000, 1000, 1000);
 	var skyboxMaterials = 
@@ -290,6 +297,7 @@ async function loadModels(){
 		scene.add(soldiers[i].model);
 		var vertex = ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)];
 		soldiers[i].setPosition(vertex);
+		soldiers[i].setParameters(gameDifficulty);
 		soldiers[i].player = robot;
 	}
 
@@ -411,6 +419,33 @@ function changeScene(){
 	loadModels();
 }
 
+function resetGame(event){
+	event.preventDefault();
+	console.log("Reset game");
+
+	document.getElementById("GameOverImage").style.visibility = "hidden";
+	document.getElementById("playButton").style.visibility = "hidden";
+	document.getElementById("title").style.visibility = "visible";
+	document.getElementById("Menu").style.visibility="visible";
+
+	controls.reset();
+	camera.lookAt(new THREE.Vector3(50, 50, -100));
+	controls.enabled = false;
+	bars = false;
+	chScene = false;
+	document.getElementById('lifebar').src = './img/lifebar/lifeBar_10.png';
+	document.getElementById("recharge").style.visibility = "hidden";
+	var b_num = document.getElementById("bulletsNum");
+	b_num.textContent = 10;
+
+	initScene();
+	robot.reset();
+
+	window.addEventListener( 'mousemove', onDocumentMouseMove, false);
+	window.addEventListener( 'click', mouseClick, false);
+	window.addEventListener( 'keypress', keyListener, false);
+}
+
 function gameOverScene(){
 	document.getElementById("level").style.visibility="hidden";
 	document.getElementById("level_num").style.visibility="hidden";
@@ -436,20 +471,13 @@ function gameOverScene(){
 	gameOver = true;
 	document.getElementById("GameOverImage").style.visibility = "visible";
 	document.getElementById("playButton").style.visibility = "visible";
-	/*document.getElementById("GameOver").style.visibility = "visible";
-	document.getElementById("restart").style.visibility = "visible";*/
+	document.getElementById("playButton").addEventListener('click', resetGame, false);
+	//document.getElementById("restart").style.visibility = "visible";*/
 
 }
 
 function checkDiedSoldiers(soldier){
     return soldier.model.userData.deadFlag != true;
-}
-
-function resetGame(){
-	initScene();
-	window.addEventListener( 'mousemove', onDocumentMouseMove, false);
-	window.addEventListener( 'click', mouseClick, false);
-	window.addEventListener( 'keypress', keyListener, false);
 }
 
 var update = function(){
@@ -491,11 +519,6 @@ var update = function(){
 	else if(lev = 100){
 		lev = -1;
 	}
-	/*if(bars == true && scenelv < 1000){
-		scenelv = scenelv + 1;
-		lowerLifeBarPlayer(Math.floor((scenelv)/100));
-		changeLevel(1 + Math.floor((scenelv)/400));
-	}*/
 	
 	lev = lev + 1;
 };
@@ -510,11 +533,14 @@ function render(){
 	}
 	
 	if(inLevel && !gameOver){
+		
+		console.log(robot.getLife());
 		if(robot){
 			robot.update(moveForward, moveBackward, moveRight, moveLeft, attack, scene);
 		}
 
 		if(robot.getLife() <= 0){
+			console.log(robot.getLife());
 			gameOverScene();
 		}
 
@@ -529,7 +555,7 @@ function render(){
         	if(soldiers[i].model.userData.deadFlag){
             	soldiers = soldiers.filter(checkDiedSoldiers);
             	numSoldiers = soldiers.length;
-            	console.log(soldiers);
+            	//console.log(soldiers);
         	}
 		}
 	}
@@ -545,6 +571,13 @@ function render(){
 window.addEventListener( 'mousemove', onDocumentMouseMove, false);
 window.addEventListener( 'click', mouseClick, false);
 window.addEventListener( 'keypress', keyListener, false);
+window.addEventListener( 'resize', function(){
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width/height;
+    camera.updateProjectionMatrix();
+});
 
 init();
 render();	

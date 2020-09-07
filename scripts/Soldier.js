@@ -44,7 +44,6 @@ export default class Soldier {
         this.playerMesh = new THREE.Object3D();
 
         this.bullet = new THREE.Object3D();
-        this.health = 100;
 
         //BOUNDING BOX 
         var cubeGeometry = new THREE.CubeGeometry(6, 18, 4);
@@ -105,6 +104,26 @@ export default class Soldier {
         this.model.position.z = vertex.z;
 
         this.model.userData.raycasterCollision.ray.origin = new THREE.Vector3(this.model.position.x, this.head.position.y * 5, this.model.position.z);
+    }
+
+    setParameters(gameDifficulty){
+        switch(gameDifficulty){
+            case 0:
+                this.gameDifficulty = gameDifficulty;
+                this.health = 100;
+                this.damage = 10;
+                break;
+            case 1:
+                this.gameDifficulty = gameDifficulty;
+                this.health = 120;
+                this.damage = 15;
+                break;
+            case 2:
+                this.gameDifficulty = gameDifficulty;
+                this.health = 160;
+                this.damage = 20;
+                break;
+        }
     }
 
     idle(){
@@ -820,12 +839,26 @@ export default class Soldier {
     }
 
     updateHealth(){
-        var damage = 20;
+        var damage = this.player.damage;    
         this.health = this.health - damage;
 
         var healthBar = this.model.getObjectByName("healthBar");
-        var newWidth = (10 * this.health)/100;
-        newWidth = newWidth/100;
+        
+        switch(this.gameDifficulty){
+            case 0:
+                var newWidth = (10 * this.health)/100;
+                newWidth = newWidth/100;
+                break;
+            case 1:
+                var newWidth = (10 * this.health)/120;
+                newWidth = newWidth/120;
+                break;
+            case 2:
+                var newWidth = (10 * this.health)/160;
+                newWidth = newWidth/160;
+                break;
+        }
+        
         healthBar.scale.set(newWidth, healthBar.scale.y, healthBar.scale.z);
 
         if(this.health <= 0)
@@ -880,6 +913,7 @@ export default class Soldier {
             for(var i=0; i < bulletIntersects.length; i++)
                 if(bulletIntersects[i].object.name == "wall" || bulletIntersects[i].object.name == "player"){
                     if(bulletIntersects[i].object.name == "player"){
+                        console.log("Danni da agg");
                         this.player.addDamage();
                         //this.lowerLifeBarPlayer(Math.floor(this.player.getLife()/10));
                     }

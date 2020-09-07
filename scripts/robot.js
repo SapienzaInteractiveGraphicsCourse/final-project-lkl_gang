@@ -49,6 +49,7 @@ export default class Robot {
         var sphere = new THREE.Mesh( geometry, material );
         this.ammo = sphere;
         this.ammoDirection = new THREE.Vector3();
+        this.damage = 20;
 
         //hitbox
         var cube = new THREE.BoxGeometry(2.8,4.2,2.5);
@@ -91,10 +92,6 @@ export default class Robot {
         if(this.getLife() > 0)
             this.life -= 10;
         this.lowerLifeBarPlayer(Math.floor(this.getLife()/10));
-        /*if(this.getLife() <= 0){
-            this.life = 0;
-            window.alert("YOU LOST!");
-        }*/
     }
 
     walk(){
@@ -632,5 +629,13 @@ export default class Robot {
         this.checkIntersectionBody(scene);
         if(character.userData.ammoAttackFlag)
             this.checkIntersectionAmmmo(scene);
+    }
+
+    reset(){
+        this.model.rotation.y = 0;
+        this.life = 100;
+        this.n_bullets = 10;
+
+        this.arrayOfSoldierMeshesToDetect = [];
     }
 }
