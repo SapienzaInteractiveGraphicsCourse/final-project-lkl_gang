@@ -253,6 +253,8 @@ function createSkybox(){
 
 	controls.saveState();
 	
+	controls.saveState();
+	
 	var geometry = new THREE.CubeGeometry(1000, 1000, 1000);
 	var skyboxMaterials = 
 	[
@@ -473,7 +475,7 @@ function checkDiedSoldiers(soldier){
 var update = function(){
 	
 	raycaster.setFromCamera( mouse, camera );
-    intersects1 = raycaster.intersectObject(plane1);
+    	intersects1 = raycaster.intersectObject(plane1);
 	intersects2 = raycaster.intersectObject(plane2);
 	intersects3 = raycaster.intersectObject(plane3);
 	intersectsStart = raycaster.intersectObject(planeStart);

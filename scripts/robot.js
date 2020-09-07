@@ -630,7 +630,11 @@ export default class Robot {
         if(character.userData.ammoAttackFlag)
             this.checkIntersectionAmmmo(scene);
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 358121d87a6561a1372b61f04b530f4061351be1
     reset(){
         this.model.rotation.y = 0;
         this.life = 100;
@@ -638,4 +642,8 @@ export default class Robot {
 
         this.arrayOfSoldierMeshesToDetect = [];
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 358121d87a6561a1372b61f04b530f4061351be1
