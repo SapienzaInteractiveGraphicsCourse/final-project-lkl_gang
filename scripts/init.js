@@ -25,7 +25,6 @@ var chScene = false;
 var bars = false;
 
 var gameOver = false;
-var restartGame = false;
 
 //Game logic
 var lev = -1;
@@ -253,8 +252,6 @@ function createSkybox(){
 
 	controls.saveState();
 	
-	controls.saveState();
-	
 	var geometry = new THREE.CubeGeometry(1000, 1000, 1000);
 	var skyboxMaterials = 
 	[
@@ -413,6 +410,10 @@ function changeScene(){
 }
 
 function resetGame(event){
+	location.reload(false);
+}
+
+/*function resetGame(event){
 	event.preventDefault();
 	console.log("Reset game");
 
@@ -433,11 +434,12 @@ function resetGame(event){
 
 	initScene();
 	robot.reset();
+	console.log(soldiers);
 
 	window.addEventListener( 'mousemove', onDocumentMouseMove, false);
 	window.addEventListener( 'click', mouseClick, false);
 	window.addEventListener( 'keypress', keyListener, false);
-}
+}*/
 
 function gameOverScene(){
 	document.getElementById("level").style.visibility="hidden";
@@ -475,7 +477,7 @@ function checkDiedSoldiers(soldier){
 var update = function(){
 	
 	raycaster.setFromCamera( mouse, camera );
-    	intersects1 = raycaster.intersectObject(plane1);
+    intersects1 = raycaster.intersectObject(plane1);
 	intersects2 = raycaster.intersectObject(plane2);
 	intersects3 = raycaster.intersectObject(plane3);
 	intersectsStart = raycaster.intersectObject(planeStart);
@@ -518,21 +520,14 @@ var update = function(){
 //Draw scene
 function render(){
 	renderer.clear();
-
-	if(restartGame == true){
-		console.log("Dentro");
-		resetGame();
-	}
 	
 	if(inLevel && !gameOver){
 		
-		console.log(robot.getLife());
 		if(robot){
 			robot.update(moveForward, moveBackward, moveRight, moveLeft, attack, scene);
 		}
 
 		if(robot.getLife() <= 0){
-			console.log(robot.getLife());
 			gameOverScene();
 		}
 

@@ -89,8 +89,11 @@ export default class Robot {
     }
 
     addDamage(){
-        if(this.getLife() > 0)
+        //console.log(this.getLife());
+        if(this.getLife() > 0){
             this.life -= 10;
+            //console.log("ccc");
+        }
         this.lowerLifeBarPlayer(Math.floor(this.getLife()/10));
     }
 
@@ -631,11 +634,11 @@ export default class Robot {
             this.checkIntersectionAmmmo(scene);
     }
     
-    reset(){
+    /*reset(){
         this.model.rotation.y = 0;
         this.life = 100;
         this.n_bullets = 10;
 
         this.arrayOfSoldierMeshesToDetect = [];
-    }
+    }*/
 }
