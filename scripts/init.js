@@ -211,9 +211,11 @@ function createGround(){
     ground = new THREE.Mesh(groundGeometry, groundMaterial, 0, 100, 100);
     ground.name = "ground";
 	scene.add(ground);
-	
-	//Create walls
-	var wallMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/wall.png')});
+
+	createWallsLevel1();
+
+	//Vecchie mura
+	/* var wallMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/wall.png')});
 	var wallGeometry1 = new THREE.BoxGeometry(120, 16, 5);
 	var wallGeometry2 = new THREE.BoxGeometry(130, 16, 5);
 	
@@ -237,7 +239,32 @@ function createGround(){
 	scene.add(wall4);
 	wall4.name = "wall";
 	wall4.rotateY(-Math.PI/2);
-	wall4.position.set(62.5, 8, 0);
+	wall4.position.set(62.5, 8, 0); */
+}
+
+function createWallsLevel1(){
+	var walls = [];
+    var boxGeometry = new THREE.BoxGeometry( 120, 20, 2 );
+    var boxMaterial = new THREE.MeshPhongMaterial( {map: new THREE.TextureLoader().load('textures/wall.png')} );
+    walls[0] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
+    walls[1] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
+    walls[2] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
+    walls[3] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
+    walls[0].position.set(0, 10, 60);
+    walls[1].position.set(0, 10, -60);
+    walls[2].position.set(60, 10, 0);
+    walls[2].rotateY(Math.PI/2);
+    walls[3].position.set(-60, 10, 0);
+    walls[3].rotateY(Math.PI/2);
+
+    for(i=0; i < walls.length; i++){
+        walls[i].name = "wall";
+    }
+        
+    scene.add( walls[0] );
+    scene.add( walls[1] );
+    scene.add( walls[2] );
+    scene.add( walls[3] );
 }
 
 //Create the skybox

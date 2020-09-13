@@ -805,7 +805,11 @@ export default class Soldier {
             model.rotation.x = position.rot;
         });
 
-        this.tweenDie.onComplete(function(){scene.remove(model);});
+        this.tweenDie.onComplete(function(){
+            //scene.remove(model.children[0]);  Rimuove il character, il soldato rimane
+            scene.remove(model);
+        });
+        //this.tweenDie.onComplete(function(){this.destroy();});
 
         this.tweenDie.start();
     }
