@@ -26,6 +26,13 @@ var bars = false;
 
 var gameOver = false;
 
+var elem2 = document.getElementById('level_num');
+
+//Countdown variables
+var timeLeft = 30;
+var elem = document.getElementById('Countdown');
+var timerId = setInterval(countdown, 1000);
+
 //Game logic
 var currLife = 100;
 var rot = -1;
@@ -54,6 +61,20 @@ var attack = false;
 
 //LIGHTS
 var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
+
+//Countdown function
+function countdown() {
+	if(inLevel){
+		if (timeLeft == -1) {
+			clearTimeout(timerId);
+			gameOverScene();
+		} 
+		else{
+			elem.innerHTML = timeLeft + ' seconds remaining';
+			timeLeft--;
+		}
+	}
+}
 
 //FUNCTIONS
 var onKeyDown = function ( event ) {
@@ -405,10 +426,6 @@ function initScene(){
 	document.addEventListener( 'keyup', onKeyUp, false );
 }
 
-function changeLevel(value){
-	document.getElementById('level_num').src = './img/lev_' + value + '.png'; 
-}
-
 function changeScene(){
 	window.removeEventListener( 'mousemove', onDocumentMouseMove, false);
 	window.removeEventListener( 'click', mouseClick, false);
@@ -438,34 +455,6 @@ function changeScene(){
 function resetGame(event){
 	location.reload(false);
 }
-
-/*function resetGame(event){
-	event.preventDefault();
-	console.log("Reset game");
-
-	document.getElementById("GameOverImage").style.visibility = "hidden";
-	document.getElementById("playButton").style.visibility = "hidden";
-	document.getElementById("title").style.visibility = "visible";
-	document.getElementById("Menu").style.visibility="visible";
-
-	controls.reset();
-	camera.lookAt(new THREE.Vector3(50, 50, -100));
-	controls.enabled = false;
-	bars = false;
-	chScene = false;
-	document.getElementById('lifebar').src = './img/lifebar/lifeBar_10.png';
-	document.getElementById("recharge").style.visibility = "hidden";
-	var b_num = document.getElementById("bulletsNum");
-	b_num.textContent = 10;
-
-	initScene();
-	robot.reset();
-	console.log(soldiers);
-
-	window.addEventListener( 'mousemove', onDocumentMouseMove, false);
-	window.addEventListener( 'click', mouseClick, false);
-	window.addEventListener( 'keypress', keyListener, false);
-}*/
 
 function gameOverScene(){
 	document.getElementById("level").style.visibility="hidden";
@@ -557,13 +546,19 @@ function resumeGame(){
 	console.log(lev);
 	if(lev == 2){
 		console.log("Lev 2");
+		elem2.innerHTML = 2;
+		timeLeft = 60;
 		numSoldiers = 2;
 	}
 	
 	if(lev == 3){
 		console.log("Lev 3");
+		elem2.innerHTML = 3;
+		timeLeft = 90;
 		numSoldiers = 3;
 	}
+
+	elem.innerHTML = timeLeft + ' seconds remaining';
 
 	console.log("Printing the currLife");
 	console.log(currLife);
@@ -590,8 +585,6 @@ function levelCompleted(){
 	}
 
 	lev = lev + 1;
-	console.log(lev);
-	document.getElementById('level_num').src = './img/lev_' + lev + '.png'; 
 	
 	document.getElementById("LevelOverImage").style.visibility = "visible";
 	document.getElementById("playLevelButton").style.visibility = "visible";

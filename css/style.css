@@ -32,18 +32,20 @@
 
 #level{
 	position: absolute;
-	top: 5%;
-	left: 45%;
-	width: 8%;
-	height: 8%;
+	font-size: 62px;
+	font-family: "Showcard Gothic";
+	color: #FFFFFF;
+	top: 4%;
+	left: 43%;
 }
 
 #level_num{
 	position: absolute;
-	top: 5%;
-	left: 52%;
-	width: 8%;
-	height: 8%;
+	font-size: 62px;
+	font-family: "Showcard Gothic";
+	color: #FF0000;
+	top: 4%;
+	left: 55%;
 }
 
 #Menu{
@@ -73,6 +75,7 @@
 #bulletsNum{
 	position:absolute;
 	font-size: 50px;
+	font-family: "Showcard Gothic";
 	color: #FFFF00;
 	top: 88%;
 	left: 13%;
@@ -110,9 +113,19 @@
 	left: 93%;
 }
 
+#Countdown{
+	position: absolute;
+	font-size: 30px;
+	font-family: "Showcard Gothic";
+	color: #00FF00;
+	top: 6%;
+	left: 3%;
+}
+
 #recharge{
 	position: absolute;
 	font-size: 20px;
+	font-family: "Showcard Gothic";
 	color: #FFFF00;
 	top: 91%;
 	left: 17%;

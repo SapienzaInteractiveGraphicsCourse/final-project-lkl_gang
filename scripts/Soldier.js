@@ -904,10 +904,6 @@ export default class Soldier {
         }
     }
 
-    /*lowerLifeBarPlayer(value){
-        document.getElementById('lifebar').src = './img/lifebar/lifeBar_' + value + '.png'; 
-    }*/
-
     checkBulletCollisions(){
         var model = this.model;
         var bulletIntersects1 = this.bullet.userData.bulletRaycaster.intersectObjects( this.scene.children );
@@ -919,7 +915,6 @@ export default class Soldier {
                 if(bulletIntersects[i].object.name == "wall" || bulletIntersects[i].object.name == "player"){
                     if(bulletIntersects[i].object.name == "player"){
                         this.player.addDamage();
-                        //this.lowerLifeBarPlayer(Math.floor(this.player.getLife()/10));
                     }
                     this.scene.remove(this.bullet);
                     model.userData.bulletReadyFlag = false;
