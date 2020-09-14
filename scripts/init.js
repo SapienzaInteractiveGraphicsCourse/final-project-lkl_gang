@@ -199,6 +199,24 @@ function promiseModel(path){
     });
 }
 
+function addBoxLife(){
+	var cube = new THREE.BoxGeometry(10,10,10);
+	var materialCube = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/box_heart_texture.png')});
+	var heart = new THREE.Mesh(cube, materialCube);
+	heart.position.set(20,5,20);
+	heart.name = "heart";
+	scene.add(heart);
+}
+
+function addBoxShield(){
+	var cube = new THREE.BoxGeometry(10,10,10);
+	var materialCube = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/box_shield_texture.jpg')});
+	var box_shield = new THREE.Mesh(cube, materialCube);
+	box_shield.position.set(-20,5,-20);
+	box_shield.name = "box_shield";
+	scene.add(box_shield);
+}
+
 function createGround(){
     var groundMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/floor.png'), side: THREE.DoubleSide});
 
@@ -277,8 +295,6 @@ async function loadModels(){
 	robot = new Robot(modelRobot);
 	scene.add(robot.model);
 
-	console.log(robot);
-	
 	//adding the soldiers to the scene
 	for(i=0; i < numSoldiers; i++){
 		var tmp = await promiseModel("models/Soldier.glb");
@@ -407,6 +423,8 @@ function changeScene(){
 	createGround();
 	createSkybox();
 	loadModels();
+	addBoxLife();
+	addBoxShield();
 }
 
 function resetGame(event){

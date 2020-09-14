@@ -44,6 +44,7 @@ export default class Robot {
 
         this.raycaster = new THREE.Raycaster(new THREE.Vector3(),new THREE.Vector3(), 0, 10);
 
+        // Geometry and material of energyball ammo
         var geometry = new THREE.SphereGeometry( 3, 32, 32 );
         var material = new THREE.MeshPhongMaterial( {map: new THREE.TextureLoader().load('textures/plasmaball.png')} );
         var sphere = new THREE.Mesh( geometry, material );
@@ -51,12 +52,21 @@ export default class Robot {
         this.ammoDirection = new THREE.Vector3();
         this.damage = 20;
 
+        // Geometry and material of shield
+        var cylinderGeometry = new THREE.CylinderGeometry(2, 2, 9, 32);
+        var cylinderMaterial = new THREE.MeshPhongMaterial({color: 0x0000FF, transparent: true, opacity: 0.4, side: THREE.DoubleSide});
+        var cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+        this.cylinder = cylinder;
+        this.cylinder.name = "player_shield";
+        this.character.userData.shieldFlag = false;
+
         //hitbox
         var cube = new THREE.BoxGeometry(2.8,4.2,2.5);
         var materialCube = new THREE.MeshLambertMaterial({wireframe: true});
         var hitbox = new THREE.Mesh(cube, materialCube);
         hitbox.position.y = 2.2;
         hitbox.name = "player";
+        hitbox.visible = false;
         this.character.add(hitbox);
     }
 
@@ -84,17 +94,23 @@ export default class Robot {
         return this.n_bullets;
     }
 
-    lowerLifeBarPlayer(value){
+    changeLifeBarPlayer(value){
         document.getElementById('lifebar').src = './img/lifebar/lifeBar_' + value + '.png'; 
     }
 
     addDamage(){
-        //console.log(this.getLife());
-        if(this.getLife() > 0){
-            this.life -= 10;
-            //console.log("ccc");
+        if(this.character.userData.shieldFlag){
+            this.model.remove(this.cylinder);
+            this.character.userData.shieldFlag = false;
         }
-        this.lowerLifeBarPlayer(Math.floor(this.getLife()/10));
+        else{
+            //console.log(this.getLife());
+            if(this.getLife() > 0){
+                this.life -= 10;
+                //console.log("ccc");
+            }
+            this.changeLifeBarPlayer(Math.floor(this.getLife()/10));
+        }
     }
 
     walk(){
@@ -508,14 +524,13 @@ export default class Robot {
         
         //New code
         var b_num = document.getElementById("bulletsNum");
-		if(this.n_bullets > 0)
-			b_num.textContent = this.n_bullets-1;
-			if(this.n_bullets - 1 == 0)
+        if(this.n_bullets > 0)
+            b_num.textContent = this.n_bullets-1;
+        if(this.n_bullets - 1 == 0)
                 document.getElementById("recharge").style.visibility = "visible";
         this.n_bullets = this.n_bullets - 1;
     }
 
-    //TODO: powerup objects interaction, fix distance from enemy and wall
     checkIntersectionBody(scene){
         var direction = new THREE.Vector3();
         this.model.getWorldDirection(direction);
@@ -534,6 +549,25 @@ export default class Robot {
                         this.character.userData.walkForwardFlag = false;
                     }
                     break;
+
+                case 'heart':
+                    if(this.life >= 90)
+                        this.life = 100;
+                    else
+                        this.life += 10;
+                    var box = scene.getObjectByName("heart");
+                    scene.remove(box);
+                    this.changeLifeBarPlayer(Math.floor(this.getLife()/10));
+                    break;
+
+                case 'box_shield':
+                    if(!this.character.userData.shieldFlag){
+                        this.model.add(this.cylinder);
+                        this.character.userData.shieldFlag = true;
+                        var box = scene.getObjectByName("box_shield");
+                        scene.remove(box);
+                    }
+                    break;
             }
         });
         direction.multiplyScalar(-1);
@@ -550,6 +584,25 @@ export default class Robot {
                     if(this.tweenBackwardWalk){
                         this.tweenBackwardWalk.stop();
                         this.character.userData.walkBackwardFlag = false;
+                    }
+                    break;
+
+                case 'heart':
+                    if(this.life >= 90)
+                        this.life = 100;
+                    else
+                        this.life += 10;
+                    var box = scene.getObjectByName("heart");
+                    scene.remove(box);
+                    this.changeLifeBarPlayer(Math.floor(this.getLife()/10));
+                    break;
+
+                case 'player_shield':
+                    if(!this.character.userData.shieldFlag){
+                        this.model.add(this.cylinder);
+                        this.character.userData.shieldFlag = true;
+                        var box = scene.getObjectByName("box_shield");
+                        scene.remove(box);
                     }
                     break;
             }
@@ -578,9 +631,6 @@ export default class Robot {
                     enemy.userData.isDamagedFlag = true;
                     break;
                 case 'wall':
-                    scene.remove(this.ammo);
-                    this.character.userData.ammoAttackFlag = false;
-                    break;
                 case 'shield':
                     scene.remove(this.ammo);
                     this.character.userData.ammoAttackFlag = false;
