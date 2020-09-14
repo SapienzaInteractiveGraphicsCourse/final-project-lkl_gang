@@ -789,6 +789,7 @@ export default class Soldier {
     die(){
         var model = this.model;
         var scene = this.scene;
+        scene.remove(model.userData.shield);
 
         var startPos = Math.abs(model.rotation.x);
 

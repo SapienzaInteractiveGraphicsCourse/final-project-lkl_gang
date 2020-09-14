@@ -27,8 +27,9 @@ var bars = false;
 var gameOver = false;
 
 //Game logic
-var lev = -1;
-var scenelv = 0;
+var currLife = 100;
+var rot = -1;
+var lev = 1;
 var gameDifficulty;
 
 var inLevel = false;
@@ -40,7 +41,7 @@ var stats;
 //Enemy variables
 var modelSoldier, modelRobot;
 var soldiers = [];
-var numSoldiers = 2;
+var numSoldiers = 1;
 var arrayOfSoldierMeshesToDetect = [];
 
 //Robot variables
@@ -305,6 +306,8 @@ async function loadModels(){
 	scene.add(robot.model);
 
 	console.log(robot);
+	robot.life = currLife;
+	console.log(robot.life);
 	
 	//adding the soldiers to the scene
 	for(i=0; i < numSoldiers; i++){
@@ -401,10 +404,6 @@ function initScene(){
 	document.addEventListener( 'keydown', onKeyDown, false );
 	document.addEventListener( 'keyup', onKeyUp, false );
 }
-
-/*function lowerLifeBarPlayer(value){
-	document.getElementById('lifebar').src = './img/lifebar/lifeBar_' + value + '.png'; 
-}*/
 
 function changeLevel(value){
 	document.getElementById('level_num').src = './img/lev_' + value + '.png'; 
@@ -509,9 +508,7 @@ var update = function(){
 	intersects3 = raycaster.intersectObject(plane3);
 	intersectsStart = raycaster.intersectObject(planeStart);
 	
-	//console.log(lev);
-	if(lev < 25){
-		//console.log("1");
+	if(rot < 25){
 		plane1.rotation.y += 0.005;
 		plane2.rotation.y += 0.005;
 		plane3.rotation.y += 0.005;
@@ -519,8 +516,7 @@ var update = function(){
 		plane2sel.rotation.y += 0.005;
 		plane3sel.rotation.y += 0.005;
 	}
-	else if(lev >= 25 && lev < 75){
-		//console.log("2");
+	else if(rot >= 25 && rot < 75){
 		plane1.rotation.y -= 0.005;
 		plane2.rotation.y -= 0.005;
 		plane3.rotation.y -= 0.005;
@@ -528,8 +524,7 @@ var update = function(){
 		plane2sel.rotation.y -= 0.005;
 		plane3sel.rotation.y -= 0.005;
 	}
-	else if(lev >= 75 && lev < 100){
-		//console.log("3");
+	else if(rot >= 75 && rot < 100){
 		plane1.rotation.y += 0.005;
 		plane2.rotation.y += 0.005;
 		plane3.rotation.y += 0.005;
@@ -537,12 +532,92 @@ var update = function(){
 		plane2sel.rotation.y += 0.005;
 		plane3sel.rotation.y += 0.005;
 	}
-	else if(lev = 100){
-		lev = -1;
+	else if(rot = 100){
+		rot = -1;
 	}
 	
-	lev = lev + 1;
+	rot = rot + 1;
 };
+
+function resumeGame(){
+	document.getElementById("LevelOverImage").style.visibility = "hidden";
+	document.getElementById("playLevelButton").style.visibility = "hidden";
+
+	document.getElementById("level").style.visibility="visible";
+	document.getElementById("level_num").style.visibility="visible";
+	document.getElementById("lifebar").style.visibility="visible";
+	document.getElementById("bullets").style.visibility="visible";
+	document.getElementById("bulletsNum").style.visibility="visible";
+
+	var b_num = document.getElementById("bulletsNum");
+	b_num.textContent = 10;
+
+	scene.remove(robot.model)
+
+	console.log(lev);
+	if(lev == 2){
+		console.log("Lev 2");
+		numSoldiers = 2;
+	}
+	
+	if(lev == 3){
+		console.log("Lev 3");
+		numSoldiers = 3;
+	}
+
+	console.log("Printing the currLife");
+	console.log(currLife);
+	console.log("Printed currLife");
+
+	createGround();
+	createSkybox();
+	loadModels();
+
+	console.log(robot.life);
+}
+
+function levelCompleted(){
+
+	document.getElementById("level").style.visibility="hidden";
+	document.getElementById("level_num").style.visibility="hidden";
+	document.getElementById("lifebar").style.visibility="hidden";
+	document.getElementById("bullets").style.visibility="hidden";
+	document.getElementById("bulletsNum").style.visibility="hidden";
+
+	for(i = 0; i < scene.children.length; i++){
+		console.log("Dentro a canc oggetti");
+		scene.remove(scene.children[i]);
+	}
+
+	lev = lev + 1;
+	console.log(lev);
+	document.getElementById('level_num').src = './img/lev_' + lev + '.png'; 
+	
+	document.getElementById("LevelOverImage").style.visibility = "visible";
+	document.getElementById("playLevelButton").style.visibility = "visible";
+	document.getElementById("playLevelButton").addEventListener('click', resumeGame, false);
+}
+
+function matchWon(){
+	gameOver = true;
+	console.log("Hai vinto");
+
+	document.getElementById("level").style.visibility="hidden";
+	document.getElementById("level_num").style.visibility="hidden";
+	document.getElementById("lifebar").style.visibility="hidden";
+	document.getElementById("bullets").style.visibility="hidden";
+	document.getElementById("bulletsNum").style.visibility="hidden";
+
+	for(i = 0; i < scene.children.length; i++){
+		console.log("Dentro a canc oggetti");
+		scene.remove(scene.children[i]);
+	}
+
+	document.getElementById("GameWonImage").style.visibility = "visible";
+	document.getElementById("playButton").style.visibility = "visible";
+	document.getElementById("playButton").addEventListener('click', resetGame, false);
+
+}
 		
 //Draw scene
 function render(){
@@ -571,6 +646,17 @@ function render(){
             	numSoldiers = soldiers.length;
             	//console.log(soldiers);
         	}
+		}
+
+		if(numSoldiers == 0){
+			currLife = robot.life;
+			if(lev < 3){
+				inLevel = false;
+				setTimeout(levelCompleted, 2500);
+			}
+			else{
+				setTimeout(matchWon, 2500);
+			}
 		}
 	}
 
