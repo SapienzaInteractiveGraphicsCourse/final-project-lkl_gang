@@ -5,17 +5,17 @@ The game that we are developing is a third person action game, consisting in thr
 The purpose of the game is to kill all of the enemies in each level in a given period of time. The main character, a robot, is managed by the user, while the enemies, some soldiers, move randomly towards the robot trying to kill him. Every time the enemy soldiers are hit or turn around, they are momentarily protected by a shield from the fire of the robot. The environment is composed by an arena where all the action takes place, and where the robot can collect two power ups, one increasing life and the other protecting the robot with a shield.
 
 ## Controls
-W: move forward
+**W**: move forward
 
-S: move backward
+**S**: move backward
 
-D: turn right
+**D**: turn right
 
-A: turn left
+**A**: turn left
 
-Spacebar: shoot
+**Spacebar**: shoot
 
-Mouse, arrows: move the visual around
+**Mouse, arrows**: move the visual around
 
 ## Live DEMO
 https://sapienzainteractivegraphicscourse.github.io/final-project-lkl_gang/
