@@ -423,6 +423,7 @@ function changeScene(){
 	scene.remove(plane2sel);
 	scene.remove(plane3sel);
 	scene.remove(planeStart);
+	document.getElementById("Instructions").style.visibility = "hidden";
 	document.getElementById("title").style.visibility = "hidden";
 	document.getElementById("Menu").style.visibility="hidden";
 	document.getElementById("level").style.visibility="visible";

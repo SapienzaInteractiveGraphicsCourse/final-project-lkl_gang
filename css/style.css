@@ -122,6 +122,15 @@
 	left: 3%;
 }
 
+#Instructions{
+	position: absolute;
+	font-size: 20px;
+	font-family: "Showcard Gothic";
+	color: #FF33FF;
+	top: 4%;
+	left: 4%;
+}
+
 #recharge{
 	position: absolute;
 	font-size: 20px;

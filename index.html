@@ -18,6 +18,16 @@
 				<label id="bulletsNum">10</label>
 				<label id="recharge">Press 'R' to recharge</label>
 			</form>
+			<div id="Instructions">
+				<p>
+					W: move forward <br>
+					S: move backward <br>
+					D: turn right <br>
+					A: turn left <br>
+					R: recharge <br>
+					Space bar: shoot
+				</p>
+			</div>
 			<div id="Countdown"></div>
 			<img id="title" src="img/title.png"></img>
 			<img id="GameOverImage" src="img/gameOverImage.png"></img>
@@ -30,6 +40,7 @@
 			<img id="playLevelButton" src="img/playLevelButton.png"></img>
 		</div>
 		<script>
+			document.getElementById("Instructions").style.visibility = "visible";
 			document.getElementById("title").style.visibility = "visible";
 			document.getElementById("Menu").style.visibility = "visible";
 			document.getElementById("GameOverImage").style.visibility = "hidden";
