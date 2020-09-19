@@ -111,17 +111,17 @@ export default class Soldier {
             case 0:
                 this.gameDifficulty = gameDifficulty;
                 this.health = 100;
-                this.damage = 10;
+                this.bulletSpeed = 1;
                 break;
             case 1:
                 this.gameDifficulty = gameDifficulty;
                 this.health = 120;
-                this.damage = 15;
+                this.bulletSpeed = 1.5;
                 break;
             case 2:
                 this.gameDifficulty = gameDifficulty;
                 this.health = 160;
-                this.damage = 20;
+                this.bulletSpeed = 2;
                 break;
         }
     }
@@ -783,6 +783,10 @@ export default class Soldier {
             model.userData.canShootFlag = true;
         });
 
+        this.tweenAim.onStop(function(){
+            model.userData.playerDetectedFlag = false;
+        });
+
         this.tweenAim.start();
     }
 
@@ -807,10 +811,8 @@ export default class Soldier {
         });
 
         this.tweenDie.onComplete(function(){
-            //scene.remove(model.children[0]);  Rimuove il character, il soldato rimane
             scene.remove(model);
         });
-        //this.tweenDie.onComplete(function(){this.destroy();});
 
         this.tweenDie.start();
     }
@@ -836,11 +838,12 @@ export default class Soldier {
     }
 
     shootBullet(){
-        this.bullet.position.x -= Math.sin(this.model.rotation.y)/3;
+        this.bullet.position.x -= this.bulletSpeed*Math.sin(this.model.rotation.y)/3;
         this.bullet.position.y += 0;
-        this.bullet.position.z -= Math.cos(this.model.rotation.y)/3;
+        this.bullet.position.z -= this.bulletSpeed*Math.cos(this.model.rotation.y)/3;
 
-        this.bullet.userData.bulletRaycaster.ray.origin = new THREE.Vector3(this.bullet.position.x, this.bullet.position.y, this.bullet.position.z);
+        this.bullet.userData.bulletRaycaster.ray.origin = new THREE.Vector3(this.bullet.position.x, 
+            this.bullet.position.y, this.bullet.position.z);
     }
 
     updateHealth(){
@@ -877,7 +880,8 @@ export default class Soldier {
         var intersects = intersects1.concat(intersects2, intersects3);
 
         if(this.model.userData.playerDetectedFlag && intersects.length == 0){
-            this.tweenAim.stop();
+            if(!this.model.userData.aimFlag)
+                this.tweenAim.stop();
             this.model.userData.canShootFlag = false;
             this.model.userData.bulletReadyFlag = false;
             this.model.userData.playerDetectedFlag = false;

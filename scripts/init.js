@@ -7,7 +7,7 @@ import Stats from "/js/stats.module.js";
 //VARIABLES
 var scene;
 var skyBox;
-var wall1, wall2, wall3, wall4;
+var walls = [];
 var camera, initCamera;
 var renderer, initRenderer;
 var controls;
@@ -252,38 +252,10 @@ function createGround(){
 	scene.add(ground);
 
 	createWallsLevel1();
-
-	//Vecchie mura
-	/* var wallMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/wall.png')});
-	var wallGeometry1 = new THREE.BoxGeometry(120, 16, 5);
-	var wallGeometry2 = new THREE.BoxGeometry(130, 16, 5);
-	
-	wall1 = new THREE.Mesh(wallGeometry1, wallMaterial);
-	scene.add(wall1);
-	wall1.name = "wall";
-	wall1.position.set(0, 8, 62.5);
-
-	wall2 = new THREE.Mesh(wallGeometry1, wallMaterial);
-	scene.add(wall2);
-	wall2.name = "wall";
-	wall2.position.set(0, 8, -62.5);
-
-	wall3 = new THREE.Mesh(wallGeometry2, wallMaterial);
-	scene.add(wall3);
-	wall3.name = "wall";
-	wall3.rotateY(-Math.PI/2);
-	wall3.position.set(-62.5, 8, 0);
-
-	wall4 = new THREE.Mesh(wallGeometry2, wallMaterial);
-	scene.add(wall4);
-	wall4.name = "wall";
-	wall4.rotateY(-Math.PI/2);
-	wall4.position.set(62.5, 8, 0); */
 }
 
 function createWallsLevel1(){
-	var walls = [];
-    var boxGeometry = new THREE.BoxGeometry( 120, 20, 2 );
+	var boxGeometry = new THREE.BoxGeometry( 120, 20, 2 );
     var boxMaterial = new THREE.MeshPhongMaterial( {map: new THREE.TextureLoader().load('textures/wall.png')} );
     walls[0] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
     walls[1] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
@@ -343,7 +315,6 @@ async function loadModels(){
 	robot = new Robot(modelRobot);
 	scene.add(robot.model);
 
-	console.log(robot);
 	robot.life = currLife;
 	console.log(robot.life);
 	
@@ -360,12 +331,8 @@ async function loadModels(){
 	}
 
 	//creating the arrayOfSoldierMeshesToDetect taking the box meshes from each soldier
-	for(i = 0; i < scene.children.length; i++){
-		if(scene.children[i].name == "soldier"){
-			arrayOfSoldierMeshesToDetect[j] = scene.children[i].children[0].children[3];
-			j++;
-		}
-	}
+	for(i = 0; i < soldiers.length; i++)
+		arrayOfSoldierMeshesToDetect[i] = soldiers[i].model.children[0].children[3];
 
 	//passing the arrayOfSoldierMeshesToDetect & the player-hitbox to each soldier
 	for(i=0; i < numSoldiers; i++){
@@ -491,10 +458,9 @@ function gameOverScene(){
 	scene.remove(ambientLight);
 
 	scene.remove(ground);
-	scene.remove(wall1);
-	scene.remove(wall2);
-	scene.remove(wall3);
-	scene.remove(wall4);
+	for(i=0; i < walls.length; i++){
+        scene.remove(walls[i]);
+    }
 
 	document.getElementById('lifebar').src = './img/lifebar/lifeBar_0.png'; 
 	gameOver = true;
@@ -506,6 +472,19 @@ function gameOverScene(){
 
 function checkDiedSoldiers(soldier){
     return soldier.model.userData.deadFlag != true;
+}
+
+function updateArrayOfSoldierMeshesToDetect(){
+	arrayOfSoldierMeshesToDetect = [];
+	for(i = 0; i < soldiers.length; i++)
+		arrayOfSoldierMeshesToDetect[i] = soldiers[i].model.children[0].children[3];
+
+	for(i=0; i < numSoldiers; i++)
+		soldiers[i].arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
+		
+	robot.arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
+
+	console.log(robot.arrayOfSoldierMeshesToDetect);
 }
 
 var update = function(){
@@ -655,9 +634,9 @@ function render(){
         	soldiers[i].checkFlags();
         	if(soldiers[i].model.userData.deadFlag){
             	soldiers = soldiers.filter(checkDiedSoldiers);
-            	numSoldiers = soldiers.length;
-            	//console.log(soldiers);
-        	}
+				numSoldiers = soldiers.length;
+				updateArrayOfSoldierMeshesToDetect();
+			}
 		}
 
 		if(numSoldiers == 0){
