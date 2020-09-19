@@ -53,10 +53,11 @@ export default class Robot {
         this.damage = 20;
 
         // Geometry and material of shield
-        var cylinderGeometry = new THREE.CylinderGeometry(2, 2, 9, 32);
+        var cylinderGeometry = new THREE.CylinderGeometry(2, 2, 4.5, 32);
         var cylinderMaterial = new THREE.MeshPhongMaterial({color: 0x0000FF, transparent: true, opacity: 0.4, side: THREE.DoubleSide});
         var cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
         this.cylinder = cylinder;
+        this.cylinder.position.set(0,2.2,0);
         this.cylinder.name = "player_shield";
         this.character.userData.shieldFlag = false;
 
@@ -118,9 +119,6 @@ export default class Robot {
         var character = this.character;
         character.userData.walkForwardFlag = true;
         character.userData.idleFlag = false;
-
-        var head = this.model.getObjectByName('Head_0');
-        head.rotation.z = 0;
 
         var rightArm = this.model.getObjectByName('ShoulderR');
         var leftArm = this.model.getObjectByName('ShoulderL');
@@ -267,9 +265,6 @@ export default class Robot {
         var character = this.character;
         character.userData.walkBackwardFlag = true;
         character.userData.idleFlag = false;
-
-        var head = this.model.getObjectByName('Head_0');
-        head.rotation.z = 0;
 
         var rightArm = this.model.getObjectByName('ShoulderR');
         var leftArm = this.model.getObjectByName('ShoulderL');
@@ -455,16 +450,9 @@ export default class Robot {
             head.rotation.z = position.rotHead;
         });
 
-        var tweenBackB = new TWEEN.Tween(position).to(targetD, 1000);
-        tweenBackB.easing(TWEEN.Easing.Linear.None);
-        tweenBackB.onUpdate(function(){
-            head.rotation.z = position.rotHead;
-        });
-
         this.tweenIdle.chain(tweenBackA);
         tweenBackA.chain(tweenB);
-        tweenB.chain(tweenBackB);
-        tweenBackB.chain(this.tweenIdle);
+        tweenB.chain(this.tweenIdle);
 
         this.tweenIdle.start();
     }
@@ -473,9 +461,11 @@ export default class Robot {
         var character = this.character;
         character.userData.attackFlag = true;
         character.userData.idleFlag = false;
-
-        var head = this.model.getObjectByName('Head_0');
-        head.rotation.z = 0;
+        var b_num = document.getElementById("bulletsNum");
+        this.n_bullets -= 1;
+        b_num.textContent = this.n_bullets;
+        if(this.n_bullets == 0)
+            document.getElementById("recharge").style.visibility = "visible";
 
         var rightArm = this.model.getObjectByName('ShoulderR');
         var rightForeArm = this.model.getObjectByName('LowerArmR');
@@ -521,14 +511,6 @@ export default class Robot {
 
         this.tweenAttack.chain(tweenBackA);
         this.tweenAttack.start();
-        
-        //New code
-        var b_num = document.getElementById("bulletsNum");
-        if(this.n_bullets > 0)
-            b_num.textContent = this.n_bullets-1;
-        if(this.n_bullets - 1 == 0)
-                document.getElementById("recharge").style.visibility = "visible";
-        this.n_bullets = this.n_bullets - 1;
     }
 
     checkIntersectionBody(scene){
@@ -611,7 +593,7 @@ export default class Robot {
     }
 
     checkIntersectionAmmmo(scene){
-        this.ammo.position.z += 4*this.ammoDirection.z;
+        this.ammo.position.z += scale*this.ammoDirection.z;
         this.ammo.position.x += 4*this.ammoDirection.x;
     
         var raycaster = this.ammo.userData.raycaster;
@@ -639,6 +621,20 @@ export default class Robot {
         });
     }
 
+    clearAnimation(){
+        this.tweenForwardWalk.stop();
+        this.character.userData.walkForwardFlag = false;
+        this.tweenBackwardWalk.stop();
+        this.character.userData.walkBackwardFlag = false;
+        this.tweenIdle.stop();
+        var head = this.model.getObjectByName('Head_0');
+        head.rotation.z = 0;
+        var rightArm = this.model.getObjectByName('ShoulderR');
+        rightArm.rotation.x = -0.11;
+        var rightForeArm = this.model.getObjectByName('LowerArmR');
+        rightForeArm.rotation.x = 1.59;
+    }
+
     update(moveForward, moveBackward, moveRight, moveLeft, attack, scene, bullets){
 
         var character = this.character;
@@ -646,15 +642,11 @@ export default class Robot {
 
          if(!character.userData.walkForwardFlag && !character.userData.walkBackwardFlag){
             if(moveForward){
-                if(this.tweenIdle){
-                    this.tweenIdle.stop();
-                }
+                this.clearAnimation();
                 this.walk();
             }
             else if(moveBackward){
-                if(this.tweenIdle){
-                    this.tweenIdle.stop();
-                }
+                this.clearAnimation();
                 this.backwardWalk();
             }
         }
@@ -663,10 +655,8 @@ export default class Robot {
             this.idle();
         }
 
-        if(attack && !character.userData.attackFlag){
-            if(this.tweenIdle){
-                this.tweenIdle.stop();
-            }
+        if(attack && this.n_bullets > 0 && !character.userData.attackFlag){
+            this.clearAnimation();
             this.attackAnimation();
             this.setAmmo(scene);
         }

@@ -96,8 +96,7 @@ var onKeyDown = function ( event ) {
 			moveRight = true;
 			break;
 		case 32:
-			if(robot.n_bullets > 0)
-				attack = true;
+			attack = true;
 			break;
 	}
 };
