@@ -6,10 +6,15 @@ The purpose of the game is to kill all of the enemies in each level in a given p
 
 ## Controls
 W: move forward
+
 S: move backward
+
 D: turn right
+
 A: turn left
+
 Spacebar: shoot
+
 Mouse, arrows: move the visual around
 
 ## Live DEMO
