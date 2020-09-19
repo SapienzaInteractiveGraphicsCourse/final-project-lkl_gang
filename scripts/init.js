@@ -40,7 +40,7 @@ var lev = 1;
 var gameDifficulty;
 
 var inLevel = false;
-var i, j = 0;
+var i = 0;
 var clock = new THREE.Clock();
 var ground;
 var stats;
@@ -58,6 +58,10 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var attack = false;
+
+//Power-up variables
+var heart;
+var shield;
 
 //LIGHTS
 var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
@@ -221,21 +225,56 @@ function promiseModel(path){
 }
 
 function addBoxLife(){
-	var cube = new THREE.BoxGeometry(10,10,10);
+	/* var cube = new THREE.BoxGeometry(10,10,10);
 	var materialCube = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/box_heart_texture.png')});
 	var heart = new THREE.Mesh(cube, materialCube);
 	heart.position.set(20,5,20);
+	heart.name = "heart"; */
+
+	const shape = new THREE.Shape();
+    const x = -2.5;
+    const y = -5;
+    shape.moveTo(x + 2.5, y + 2.5);
+    shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
+    shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
+    shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
+    shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
+    shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
+    shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+
+    const extrudeSettings = {
+      steps: 2,
+      depth: 2,
+      bevelEnabled: true,
+      bevelThickness: 1,
+      bevelSize: 1,
+      bevelSegments: 2,
+    };
+
+	var heartGeometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+	var heartMaterial = new THREE.MeshLambertMaterial({color: 0xFF4500});
+	heart = new THREE.Mesh(heartGeometry, heartMaterial);
+	heart.position.set(20, 5, 20);
+	heart.rotation.z = Math.PI;
 	heart.name = "heart";
+  
 	scene.add(heart);
 }
 
 function addBoxShield(){
-	var cube = new THREE.BoxGeometry(10,10,10);
+	/* var cube = new THREE.BoxGeometry(10,10,10);
 	var materialCube = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/box_shield_texture.jpg')});
 	var box_shield = new THREE.Mesh(cube, materialCube);
 	box_shield.position.set(-20,5,-20);
-	box_shield.name = "box_shield";
-	scene.add(box_shield);
+	box_shield.name = "box_shield"; */
+
+	var cylinderGeometry = new THREE.CylinderGeometry(4, 4, 10, 6);
+    var cylinderMaterial = new THREE.MeshPhongMaterial({color: 0x000080, transparent: false, side: THREE.DoubleSide});
+	shield = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+	shield.position.set(-20,5,-20);
+    shield.name = "box_shield";
+
+	scene.add(shield);
 }
 
 function createGround(){
@@ -280,15 +319,11 @@ function createWallsLevel1(){
 
 //Create the skybox
 function createSkybox(){
-	controls = new OrbitControls(camera, renderer.domElement);
+	/* controls = new OrbitControls(camera, renderer.domElement);
 	controls.minDistance = 0;
 	controls.maxDistance = 130;
 	
-	//Change the position of the camera
-	camera.position.set(50, 50, 50);
-	camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-	controls.saveState();
+	controls.saveState(); */
 	
 	var geometry = new THREE.CubeGeometry(1000, 1000, 1000);
 	var skyboxMaterials = 
@@ -411,6 +446,10 @@ function initScene(){
 }
 
 function changeScene(){
+	camera.position.set(0, 70, -70);
+	camera.fov = 45;
+	camera.lookAt(new THREE.Vector3(0, 0, 0));
+
 	window.removeEventListener( 'mousemove', onDocumentMouseMove, false);
 	window.removeEventListener( 'click', mouseClick, false);
 	//window.removeEventListener( 'keypress', keyListener, false);
@@ -484,8 +523,17 @@ function updateArrayOfSoldierMeshesToDetect(){
 		soldiers[i].arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
 		
 	robot.arrayOfSoldierMeshesToDetect = arrayOfSoldierMeshesToDetect;
+}
 
-	console.log(robot.arrayOfSoldierMeshesToDetect);
+function updateCamera(){
+	var relativeCameraOffset = new THREE.Vector3(0, 15, -16);
+
+	var cameraOffset = relativeCameraOffset.applyMatrix4( robot.model.matrixWorld );
+
+	camera.position.x = cameraOffset.x;
+	camera.position.y = cameraOffset.y;
+	camera.position.z = cameraOffset.z;
+	camera.lookAt( robot.model.position );
 }
 
 var update = function(){
@@ -541,8 +589,7 @@ function resumeGame(){
 	b_num.textContent = 10;
 
 	scene.remove(robot.model)
-
-	console.log(lev);
+	
 	if(lev == 2){
 		console.log("Lev 2");
 		elem2.innerHTML = 2;
@@ -559,15 +606,15 @@ function resumeGame(){
 
 	elem.innerHTML = timeLeft + ' seconds remaining';
 
-	console.log("Printing the currLife");
+	/* console.log("Printing the currLife");
 	console.log(currLife);
-	console.log("Printed currLife");
+	console.log("Printed currLife"); */
 
+	camera.position.set(0, 70, -70);
+	camera.lookAt(scene.position);
 	createGround();
 	createSkybox();
 	loadModels();
-
-	console.log(robot.life);
 }
 
 function levelCompleted(){
@@ -619,16 +666,21 @@ function render(){
 		
 		if(robot){
 			robot.update(moveForward, moveBackward, moveRight, moveLeft, attack, scene);
+			updateCamera();
 		}
 
 		if(robot.getLife() <= 0){
 			gameOverScene();
 		}
 
-		var delta = clock.getDelta();
-    
-    	//Update the controls
-		controls.update(delta);
+		if(heart)
+			heart.rotation.y += 0.01;
+		if(shield)
+			shield.rotation.y += 0.01;
+
+		//Update the controls
+		//var delta = clock.getDelta();
+		//controls.update(delta);
 
 		//Update the state of the soldiers
 		for(i=0; i < numSoldiers; i++){
