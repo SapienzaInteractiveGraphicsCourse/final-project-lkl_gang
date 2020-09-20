@@ -8,6 +8,7 @@ import Stats from "/js/stats.module.js";
 var scene;
 var skyBox;
 var walls = [];
+var grounds = [];
 var camera, initCamera;
 var renderer, initRenderer;
 var controls;
@@ -29,7 +30,7 @@ var gameOver = false;
 var elem2 = document.getElementById('level_num');
 
 //Countdown variables
-var timeLeft = 30;
+var timeLeft = 40;
 var elem = document.getElementById('Countdown');
 var timerId = setInterval(countdown, 1000);
 
@@ -42,7 +43,6 @@ var gameDifficulty;
 var inLevel = false;
 var i = 0;
 var clock = new THREE.Clock();
-var ground;
 var stats;
 
 //Enemy variables
@@ -254,11 +254,20 @@ function addBoxLife(){
 	var heartGeometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
 	var heartMaterial = new THREE.MeshLambertMaterial({color: 0xFF4500});
 	heart = new THREE.Mesh(heartGeometry, heartMaterial);
-	heart.position.set(20, 5, 20);
 	heart.rotation.z = Math.PI;
 	heart.name = "heart";
+
+	var vertex = grounds[2].geometry.vertices[Math.floor(Math.random() * grounds[2].geometry.vertices.length)];
+	heart.position.set(vertex.x, 5, vertex.z);
   
-	scene.add(heart);
+	setTimeout(function(){
+		scene.add(heart);
+	}, 10000);
+
+	setTimeout(function(){
+		scene.remove(heart);
+		addBoxLife();
+	}, 20000);
 }
 
 function addBoxShield(){
@@ -271,50 +280,115 @@ function addBoxShield(){
 	var cylinderGeometry = new THREE.CylinderGeometry(4, 4, 10, 6);
     var cylinderMaterial = new THREE.MeshPhongMaterial({color: 0x000080, transparent: false, side: THREE.DoubleSide});
 	shield = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-	shield.position.set(-20,5,-20);
-    shield.name = "box_shield";
+	shield.name = "box_shield";
+	
+	var vertex = grounds[2].geometry.vertices[Math.floor(Math.random() * grounds[2].geometry.vertices.length)];
+	shield.position.set(vertex.x, 5, vertex.z);
 
-	scene.add(shield);
+	setTimeout(function(){
+		scene.add(shield);
+	}, 10000);
+
+	setTimeout(function(){
+		scene.remove(shield);
+		addBoxShield();
+	}, 20000);
 }
 
 function createGround(){
     var groundMaterial = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/floor.png'), side: THREE.DoubleSide});
+	var groundGeometry0 = new THREE.PlaneGeometry(60, 60, 100, 100);
+	var groundGeometry1 = new THREE.PlaneGeometry(16, 40, 100, 100);
+	var ground2width;
+	switch(lev){
+		case 1:
+			ground2width = 120;
+			break;
+		case 2:
+			ground2width = 180;
+			break;
+		case 3:
+			ground2width = 220;
+			break;
+	}
+	var groundGeometry2 = new THREE.PlaneGeometry(ground2width, ground2width, 100, 100);
+	groundGeometry0.rotateX(-Math.PI/2);
+	groundGeometry1.rotateX(-Math.PI/2);
+	groundGeometry2.rotateX(-Math.PI/2);
 
-    var groundGeometry = new THREE.PlaneGeometry(120, 120, 100, 100);
-    groundGeometry.rotateX(-Math.PI/2);
+	grounds[0] = new THREE.Mesh(groundGeometry0, groundMaterial, 0, 100, 100);
+	grounds[1] = new THREE.Mesh(groundGeometry1, groundMaterial, 0, 100, 100);
+	grounds[2] = new THREE.Mesh(groundGeometry2, groundMaterial, 0, 100, 100);
 
-    groundGeometry.computeFaceNormals();
-    groundGeometry.computeVertexNormals();
+	groundGeometry1.translate(0, 0, grounds[0].geometry.parameters.height/2 + grounds[1].geometry.parameters.height/2);
+	groundGeometry2.translate(0, 0, 
+		grounds[0].geometry.parameters.height/2 + grounds[1].geometry.parameters.height + grounds[2].geometry.parameters.height/2);
 
-    ground = new THREE.Mesh(groundGeometry, groundMaterial, 0, 100, 100);
-    ground.name = "ground";
-	scene.add(ground);
+	for(i=0; i < grounds.length; i++){
+		grounds[i].name = "ground" + i;
+		scene.add(grounds[i]);
+    }
 
-	createWallsLevel1();
+	createWalls();
 }
 
-function createWallsLevel1(){
-	var boxGeometry = new THREE.BoxGeometry( 120, 20, 2 );
+function createWalls(){
+	var boxGeometry1 = new THREE.BoxGeometry( 60, 20, 2 );
+	var boxGeometry2 = new THREE.BoxGeometry( 22, 20, 2);
+	var boxGeometry3 = new THREE.BoxGeometry( 40, 20, 2);
+	var boxGeometry4 = new THREE.BoxGeometry( grounds[2].geometry.parameters.width, 20, 2);
+	var boxGeometry5 = new THREE.BoxGeometry( (grounds[2].geometry.parameters.width - 16)/2, 20, 2);
     var boxMaterial = new THREE.MeshPhongMaterial( {map: new THREE.TextureLoader().load('textures/wall.png')} );
-    walls[0] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
-    walls[1] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
-    walls[2] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
-    walls[3] = new THREE.Mesh( boxGeometry, boxMaterial, 0 );
-    walls[0].position.set(0, 10, 60);
-    walls[1].position.set(0, 10, -60);
-    walls[2].position.set(60, 10, 0);
+    walls[0] = new THREE.Mesh( boxGeometry2, boxMaterial, 0 );
+    walls[1] = new THREE.Mesh( boxGeometry1, boxMaterial, 0 );
+    walls[2] = new THREE.Mesh( boxGeometry1, boxMaterial, 0 );
+	walls[3] = new THREE.Mesh( boxGeometry1, boxMaterial, 0 );
+	walls[4] = new THREE.Mesh( boxGeometry2, boxMaterial, 0 );
+
+	walls[5] = new THREE.Mesh( boxGeometry3, boxMaterial, 0 );
+	walls[6] = new THREE.Mesh( boxGeometry3, boxMaterial, 0 );
+
+	walls[7] = new THREE.Mesh( boxGeometry5, boxMaterial, 0 );
+	walls[8] = new THREE.Mesh( boxGeometry5, boxMaterial, 0 );
+	walls[9] = new THREE.Mesh( boxGeometry4, boxMaterial, 0 );
+	walls[10] = new THREE.Mesh( boxGeometry4, boxMaterial, 0 );
+	walls[11] = new THREE.Mesh( boxGeometry4, boxMaterial, 0);
+
+	var wallsheight = boxGeometry1.parameters.height/2;
+	var groundheight0 = grounds[0].geometry.parameters.height;
+	var groundwidth1 = grounds[1].geometry.parameters.width;
+	var groundheight1 = grounds[1].geometry.parameters.height;
+	var groundheight2 = grounds[2].geometry.parameters.height;
+	
+	//First ground walls
+	walls[0].position.set(-20, wallsheight, groundheight0/2);
+	walls[4].position.set(20, wallsheight, groundheight0/2);
+    walls[1].position.set(0, wallsheight, -groundheight0/2);
+    walls[2].position.set(groundheight0/2, wallsheight, 0);
     walls[2].rotateY(Math.PI/2);
-    walls[3].position.set(-60, 10, 0);
-    walls[3].rotateY(Math.PI/2);
+    walls[3].position.set(-groundheight0/2, wallsheight, 0);
+	walls[3].rotateY(Math.PI/2);
+	
+	//Second ground walls
+	walls[5].position.set(-groundwidth1/2, wallsheight, groundheight0/2 + groundheight1/2);
+	walls[5].rotateY(Math.PI/2);
+	walls[6].position.set(groundwidth1/2, wallsheight, groundheight0/2 + groundheight1/2);
+	walls[6].rotateY(Math.PI/2);
+
+	//Third ground walls
+	walls[7].position.set(-((grounds[2].geometry.parameters.width - 16)/4 +8), wallsheight, groundheight0/2 + groundheight1);
+	walls[8].position.set(((grounds[2].geometry.parameters.width - 16)/4 +8), wallsheight, groundheight0/2 + groundheight1);
+    walls[9].position.set(0, wallsheight, groundheight0/2 + groundheight1 + groundheight2);
+    walls[10].position.set(groundheight2/2, wallsheight, groundheight0/2 + groundheight1 + groundheight2/2);
+    walls[10].rotateY(Math.PI/2);
+    walls[11].position.set(-groundheight2/2, wallsheight, groundheight0/2 + groundheight1 + groundheight2/2);
+	walls[11].rotateY(Math.PI/2);
+
 
     for(i=0; i < walls.length; i++){
-        walls[i].name = "wall";
-    }
-        
-    scene.add( walls[0] );
-    scene.add( walls[1] );
-    scene.add( walls[2] );
-    scene.add( walls[3] );
+		walls[i].name = "wall";
+		scene.add(walls[i]);
+	}
 }
 
 //Create the skybox
@@ -359,10 +433,10 @@ async function loadModels(){
 		modelSoldier = tmp.scene;
 		soldiers[i] = new Soldier(modelSoldier, scene);
 		scene.add(soldiers[i].model);
-		var vertex = ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)];
-		soldiers[i].setPosition(vertex);
 		soldiers[i].setParameters(gameDifficulty);
 		soldiers[i].player = robot;
+		soldiers[i].setGround(grounds[2]);
+		soldiers[i].setPosition();
 	}
 
 	//creating the arrayOfSoldierMeshesToDetect taking the box meshes from each soldier
@@ -497,7 +571,7 @@ function gameOverScene(){
 	scene.remove(skyBox);
 	scene.remove(ambientLight);
 
-	scene.remove(ground);
+	scene.remove(grounds);
 	for(i=0; i < walls.length; i++){
         scene.remove(walls[i]);
     }
@@ -588,19 +662,19 @@ function resumeGame(){
 	var b_num = document.getElementById("bulletsNum");
 	b_num.textContent = 10;
 
-	scene.remove(robot.model)
+	scene.remove(robot.model);
 	
 	if(lev == 2){
 		console.log("Lev 2");
 		elem2.innerHTML = 2;
-		timeLeft = 60;
+		timeLeft = 70;
 		numSoldiers = 2;
 	}
 	
 	if(lev == 3){
 		console.log("Lev 3");
 		elem2.innerHTML = 3;
-		timeLeft = 90;
+		timeLeft = 100;
 		numSoldiers = 3;
 	}
 
@@ -615,6 +689,8 @@ function resumeGame(){
 	createGround();
 	createSkybox();
 	loadModels();
+	addBoxLife();
+	addBoxShield();
 }
 
 function levelCompleted(){
@@ -625,11 +701,10 @@ function levelCompleted(){
 	document.getElementById("bullets").style.visibility="hidden";
 	document.getElementById("bulletsNum").style.visibility="hidden";
 
-	for(i = 0; i < scene.children.length; i++){
-		console.log("Dentro a canc oggetti");
-		scene.remove(scene.children[i]);
+	while(scene.children.length > 0){ 
+		scene.remove(scene.children[0]); 
 	}
-
+	
 	lev = lev + 1;
 	
 	document.getElementById("LevelOverImage").style.visibility = "visible";
@@ -639,7 +714,7 @@ function levelCompleted(){
 
 function matchWon(){
 	gameOver = true;
-	console.log("Hai vinto");
+	//console.log("Hai vinto");
 
 	document.getElementById("level").style.visibility="hidden";
 	document.getElementById("level_num").style.visibility="hidden";
@@ -675,6 +750,7 @@ function render(){
 
 		if(heart)
 			heart.rotation.y += 0.01;
+		
 		if(shield)
 			shield.rotation.y += 0.01;
 

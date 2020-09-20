@@ -42,6 +42,7 @@ export default class Soldier {
         this.arrayOfSoldierMeshesToDetect = [];
         this.player = [];
         this.playerMesh = new THREE.Object3D();
+        this.ground = new THREE.Object3D();
 
         this.bullet = new THREE.Object3D();
 
@@ -98,7 +99,9 @@ export default class Soldier {
         });
     }
 
-    setPosition(vertex){
+    setPosition(){
+        var vertex = this.ground.geometry.vertices[Math.floor(Math.random() * this.ground.geometry.vertices.length)];
+        
         this.model.position.x = vertex.x;
         this.model.position.y = 0;
         this.model.position.z = vertex.z;
@@ -124,6 +127,10 @@ export default class Soldier {
                 this.bulletSpeed = 2;
                 break;
         }
+    }
+
+    setGround(ground){
+        this.ground = ground;
     }
 
     idle(){
@@ -224,11 +231,10 @@ export default class Soldier {
         var startRot = model.rotation.y;
         var startDir = model.userData.direction;
         var head = model.getObjectByName("mixamorigHead");
-        var ground = this.scene.getObjectByName("ground");
         
         model.userData.patrolFlag = false;
 
-        var targetPoint = new THREE.Vector3().copy(ground.geometry.vertices[Math.floor(Math.random() * ground.geometry.vertices.length)]);
+        var targetPoint = new THREE.Vector3().copy(this.ground.geometry.vertices[Math.floor(Math.random() * this.ground.geometry.vertices.length)]);
         targetPoint.y = 0;
 
         var direction = new THREE.Vector3().subVectors(targetPoint, model.position);
