@@ -2,7 +2,7 @@
 	<head>
 		<title>Interactive Project</title>
 		
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="./css/style.css">
 		
 		<style> 
 			body {margin: 0; }
@@ -29,15 +29,15 @@
 				</p>
 			</div>
 			<div id="Countdown"></div>
-			<img id="title" src="img/title.png"></img>
-			<img id="GameOverImage" src="img/gameOverImage.png"></img>
-			<img id="GameWonImage" src="img/gameWonImage.png"></img>
-			<img id="LevelOverImage" src="img/LevelOverImage.png"></img>
-			<img id="Menu" src="img/difficulty.png"></img>
-			<img id="lifebar" src="img/lifebar/lifeBar_10.png"></img>
-			<img id="bullets" src="img/bullets.png"></img>
-			<img id="playButton" src="img/playButton.png"></img>
-			<img id="playLevelButton" src="img/playLevelButton.png"></img>
+			<img id="title" src="./img/title.png"></img>
+			<img id="GameOverImage" src="./img/gameOverImage.png"></img>
+			<img id="GameWonImage" src="./img/GameWonImage.png"></img>
+			<img id="LevelOverImage" src="./img/LevelOverImage.png"></img>
+			<img id="Menu" src="./img/difficulty.png"></img>
+			<img id="lifebar" src="./img/lifebar/lifeBar_10.png"></img>
+			<img id="bullets" src="./img/bullets.png"></img>
+			<img id="playButton" src="./img/playButton.png"></img>
+			<img id="playLevelButton" src="./img/playLevelButton.png"></img>
 		</div>
 		<script>
 			document.getElementById("Instructions").style.visibility = "visible";
@@ -55,9 +55,9 @@
 			document.getElementById("playButton").style.visibility = "hidden";
 			document.getElementById("playLevelButton").style.visibility = "hidden";
 		</script>
-		<script src= "build/three.js"> </script>
-		<script src= "js/Tween.js"> </script>
-		<script type="module" src= "scripts/init.js"> </script>
+		<script src= "./build/three.js"> </script>
+		<script src= "./js/Tween.js"> </script>
+		<script type="module" src= "./scripts/init.js"> </script>
 		<script>
 			var audio = new Audio("halo_theme_song.mp3");
 			var musicOn = false;
@@ -84,8 +84,8 @@
 			}
 			
 		</script>
-		<img id="speaker" src="img/speaker.png" onclick="audioChange()"></audio>
-		<img id="speakerMute" src="img/speakerMute.png" onclick="audioChange()"></audio>
+		<img id="speaker" src="./img/speaker.png" onclick="audioChange()"></audio>
+		<img id="speakerMute" src="./img/speakerMute.png" onclick="audioChange()"></audio>
 		<script>
 			document.getElementById("speaker").style.visibility = "hidden";
 			document.getElementById("speakerMute").style.visibility = "visible";

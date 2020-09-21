@@ -1,8 +1,8 @@
-import { GLTFLoader } from "/js/GLTFLoader.js";
-import { OrbitControls } from "/js/OrbitControls.js";
-import Soldier from "/scripts/Soldier.js";
-import Robot from "/scripts/robot.js";
-import Stats from "/js/stats.module.js";
+import { GLTFLoader } from "../js/GLTFLoader.js";
+import { OrbitControls } from "../js/OrbitControls.js";
+import Soldier from "./Soldier.js";
+import Robot from "./robot.js";
+import Stats from "../js/stats.module.js";
 
 //VARIABLES
 var scene;
