@@ -1,19 +1,14 @@
 import { GLTFLoader } from "/js/GLTFLoader.js";
-import { OrbitControls } from "/js/OrbitControls.js";
 import Soldier from "/scripts/Soldier.js";
 import Robot from "/scripts/robot.js";
-import Stats from "/js/stats.module.js";
 
 //VARIABLES
 var scene;
 var skyBox;
 var walls = [];
 var grounds = [];
-var camera, initCamera;
-var renderer, initRenderer;
-var controls;
-var zero = true;
-var num = 0;
+var camera;
+var renderer;
 var raycaster;
 var mouse;
 var intersects1, intersects2, intersects3;
@@ -42,8 +37,6 @@ var gameDifficulty;
 
 var inLevel = false;
 var i = 0;
-var clock = new THREE.Clock();
-var stats;
 
 //Enemy variables
 var modelSoldier, modelRobot;
@@ -141,13 +134,6 @@ function init(){
 	raycaster = new THREE.Raycaster();
 	mouse = new THREE.Vector2();
 
-	// stats
-    /* stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.bottom = '0px';
-    stats.domElement.style.zIndex = 100;
-    container.appendChild( stats.dom ); */
-
 	initScene();
 }
 
@@ -225,12 +211,6 @@ function promiseModel(path){
 }
 
 function addBoxLife(){
-	/* var cube = new THREE.BoxGeometry(10,10,10);
-	var materialCube = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/box_heart_texture.png')});
-	var heart = new THREE.Mesh(cube, materialCube);
-	heart.position.set(20,5,20);
-	heart.name = "heart"; */
-
 	const shape = new THREE.Shape();
     const x = -2.5;
     const y = -5;
@@ -271,12 +251,6 @@ function addBoxLife(){
 }
 
 function addBoxShield(){
-	/* var cube = new THREE.BoxGeometry(10,10,10);
-	var materialCube = new THREE.MeshPhongMaterial({map: new THREE.TextureLoader().load('textures/box_shield_texture.jpg')});
-	var box_shield = new THREE.Mesh(cube, materialCube);
-	box_shield.position.set(-20,5,-20);
-	box_shield.name = "box_shield"; */
-
 	var cylinderGeometry = new THREE.CylinderGeometry(4, 4, 10, 6);
     var cylinderMaterial = new THREE.MeshPhongMaterial({color: 0x000080, transparent: false, side: THREE.DoubleSide});
 	shield = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
@@ -393,12 +367,6 @@ function createWalls(){
 
 //Create the skybox
 function createSkybox(){
-	/* controls = new OrbitControls(camera, renderer.domElement);
-	controls.minDistance = 0;
-	controls.maxDistance = 130;
-	
-	controls.saveState(); */
-	
 	var geometry = new THREE.CubeGeometry(1000, 1000, 1000);
 	var skyboxMaterials = 
 	[
@@ -680,10 +648,6 @@ function resumeGame(){
 
 	elem.innerHTML = timeLeft + ' seconds remaining';
 
-	/* console.log("Printing the currLife");
-	console.log(currLife);
-	console.log("Printed currLife"); */
-
 	camera.position.set(0, 70, -70);
 	camera.lookAt(scene.position);
 	createGround();
@@ -753,10 +717,6 @@ function render(){
 		
 		if(shield)
 			shield.rotation.y += 0.01;
-
-		//Update the controls
-		//var delta = clock.getDelta();
-		//controls.update(delta);
 
 		//Update the state of the soldiers
 		for(i=0; i < numSoldiers; i++){
