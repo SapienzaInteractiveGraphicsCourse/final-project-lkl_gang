@@ -15,9 +15,9 @@ The purpose of the game is to kill all of the enemies in each level in a given p
 
 **A**: turn left
 
-**Spacebar**: shoot
+**R**: recharge
 
-**Mouse, arrows**: move the visual around
+**Spacebar**: shoot
 
 ## Built with:
 - Html, CSS, Javascript
