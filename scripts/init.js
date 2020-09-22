@@ -1,6 +1,6 @@
-import { GLTFLoader } from "/js/GLTFLoader.js";
-import Soldier from "/scripts/Soldier.js";
-import Robot from "/scripts/robot.js";
+import { GLTFLoader } from "../js/GLTFLoader.js";
+import Soldier from "./Soldier.js";
+import Robot from "./robot.js";
 
 //VARIABLES
 var scene;
