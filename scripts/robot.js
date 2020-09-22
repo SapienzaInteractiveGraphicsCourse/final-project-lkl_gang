@@ -105,10 +105,8 @@ export default class Robot {
             this.character.userData.shieldFlag = false;
         }
         else{
-            //console.log(this.getLife());
             if(this.getLife() > 0){
                 this.life -= 10;
-                //console.log("ccc");
             }
             this.changeLifeBarPlayer(Math.floor(this.getLife()/10));
         }
@@ -674,11 +672,4 @@ export default class Robot {
             this.checkIntersectionAmmmo(scene);
     }
     
-    /*reset(){
-        this.model.rotation.y = 0;
-        this.life = 100;
-        this.n_bullets = 10;
-
-        this.arrayOfSoldierMeshesToDetect = [];
-    }*/
 }
